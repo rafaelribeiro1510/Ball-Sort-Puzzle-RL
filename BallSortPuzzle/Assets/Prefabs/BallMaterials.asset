@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2371aaf1f9801a04a994b5059b5b1661, type: 3}
+  m_Name: BallMaterials
+  m_EditorClassIdentifier: 
+  materialDict:
+  - key: 0
+    material: {fileID: 2100000, guid: 0ebfb3113c03dff47ac8ad7dda308c92, type: 2}
+  - key: 1
+    material: {fileID: 2100000, guid: 4f40a8d53eef4f34db1bc61170723f6d, type: 2}
+  - key: 2
+    material: {fileID: 2100000, guid: 65dcb4f74f4fdc64985f24f2423ac798, type: 2}
+  - key: 3
+    material: {fileID: 2100000, guid: 98c1dd85151cb3143ab0076d1ad2c261, type: 2}
+  - key: 4
+    material: {fileID: 2100000, guid: 7f2501997c80bd747b8cd83ab5f662fc, type: 2}
+  - key: 5
+    material: {fileID: 2100000, guid: 8ee2655b9c078084fadcb4695ef59d2a, type: 2}
+  - key: 6
+    material: {fileID: 2100000, guid: 6a7e2aa67a7b70543b96f6271dbbee01, type: 2}
+  - key: 7
+    material: {fileID: 2100000, guid: 73b4af61e0a829d46a4a414eb9c56592, type: 2}
+  - key: 8
+    material: {fileID: 2100000, guid: e3b976da6941b7448a98a304a04f98f5, type: 2}
+  - key: 255
+    material: {fileID: 2100000, guid: 2afc56874afd8d34ea0cc304edda0175, type: 2}

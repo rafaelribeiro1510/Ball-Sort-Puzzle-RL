@@ -1,7 +1,3 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 public class Tube : MonoBehaviour
@@ -11,9 +7,9 @@ public class Tube : MonoBehaviour
 
     public void Resize()
     {
-        transform.GetChild(0).localScale = new Vector3(1, height, 1);
+        transform.GetChild(0).localScale = new Vector3(1, height + 0.2f, 1);
         var oldPos = transform.GetChild(1).position;
-        transform.GetChild(1).position = new Vector3(oldPos.x, -height, oldPos.z);
+        transform.GetChild(1).position = new Vector3(oldPos.x, -height - 0.2f, oldPos.z);
     }
 
 }
