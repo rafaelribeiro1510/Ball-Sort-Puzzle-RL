@@ -2,8 +2,8 @@ using UnityEngine;
 
 public class Tube : MonoBehaviour
 {
-    [SerializeField] private int height;
-    public int Height { get => height; set => height = value; }
+    [SerializeField] private float height;
+    public float Height { get => height; set => height = value; }
 
     public void Resize()
     {

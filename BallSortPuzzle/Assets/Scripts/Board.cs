@@ -6,7 +6,9 @@ using Random = UnityEngine.Random;
 
 public class Board : MonoBehaviour
 {
-    [SerializeField] private int tubeH, nTubes, nColors;
+    [SerializeField] [Range(3,8)] private int tubeH;
+    [SerializeField] [Range(3,8)] private int nTubes;
+    [SerializeField] [Range(2,8)] private int nColors;
     private List<List<BallColor>> _tubes;
     
     private int _width;
@@ -22,19 +24,35 @@ public class Board : MonoBehaviour
 
     private void Start()
     {
-
         InstantiateTubes();
         RandomizeBalls();
     }
 
+    [ContextMenu("New Board")]
+    private void InitializeBoard()
+    {
+        RandomizeParameters();
+        InstantiateTubes();
+        RandomizeBalls();
+    }
+
+    private void RandomizeParameters()
+    {
+        do
+        {
+            tubeH = Random.Range(3, 8);
+            nTubes = Random.Range(3, 8);
+            nColors = Random.Range(3, 8);
+        } while (!validParameters());
+    }
+
     private void InstantiateTubes()
     {
+        if (!validParameters())
+            throw new Exception("Invalid parameters");
+        
         for (var i = 1; i < transform.childCount; i++)
             Destroy(transform.GetChild(i).gameObject);
-        
-        if (nColors > nTubes) throw new Exception("Board can't have more colors than tubes");
-        else if (nColors * tubeH < nColors) throw new Exception("There must be at least one piece of each color");
-        else if (nColors * tubeH > nTubes * tubeH) throw new Exception("Too many pieces");
 
         _tubes = new List<List<BallColor>>();
         for (var i = 0; i < nTubes; i++)
@@ -50,20 +68,10 @@ public class Board : MonoBehaviour
                 Quaternion.identity, transform);
             
             var script = newTube.GetComponent<Tube>(); 
-            script.Height = tubeH / 2;
+            script.Height = tubeH / 2f;
             script.Resize();
 
         }
-    }
-
-    private Vector3 tubePosByIndex(int i)
-    {
-        return new Vector3(i * (_width / nTubes) - _width / 2 + 1, 0, -0.6f);
-    }
-    
-    private Vector3 tubePosByIndex(int i, int h)
-    {
-        return new Vector3(i * (_width / nTubes) - _width / 2 + 1, h - tubeH/2 + 0.4f, -0.6f);
     }
 
     private void RandomizeBalls()
@@ -100,5 +108,20 @@ public class Board : MonoBehaviour
                 newBall.GetComponent<Ball>().SetColor(tube[j]); 
             }
         }
+    }
+
+    private bool validParameters()
+    {
+        return (nColors <= nTubes) && (nColors * tubeH >= nColors) && (nColors * tubeH <= nTubes * tubeH);
+    }
+    
+    private Vector3 tubePosByIndex(int i)
+    {
+        return new Vector3(i * (_width / nTubes) - _width / 2 + 1, 0, -0.6f);
+    }
+    
+    private Vector3 tubePosByIndex(int i, int h)
+    {
+        return new Vector3(i * (_width / nTubes) - _width / 2 + 1, h - tubeH / 2f + 0.4f, -0.6f);
     }
 }
