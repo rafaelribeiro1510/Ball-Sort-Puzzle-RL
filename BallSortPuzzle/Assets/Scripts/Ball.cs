@@ -24,7 +24,6 @@ public class Ball : MonoBehaviour
 
     public void SetColor(BallColor _color)
     {
-        print(_color);
         color = _color;
         _renderer.material = _colors[_color];
     }
