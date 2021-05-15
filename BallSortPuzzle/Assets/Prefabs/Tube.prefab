@@ -239,6 +239,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   height: 0
   index: 0
+  isSelected: 0
 --- !u!65 &-2341852876422695498
 BoxCollider:
   m_ObjectHideFlags: 0
