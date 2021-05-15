@@ -7,7 +7,7 @@ public class Tube : MonoBehaviour
     public float Height { get => height; set => height = value; }
 
     public int index;
-    public Stack<GameObject> balls = new Stack<GameObject>();
+    public readonly Stack<GameObject> Balls = new Stack<GameObject>();
     public bool isSelected = false;
 
     public void Resize()
@@ -17,19 +17,13 @@ public class Tube : MonoBehaviour
         transform.GetChild(1).position = new Vector3(oldPos.x, -height - 0.2f, oldPos.z);
     }
 
-    public GameObject removeTopBall() {
-
-        if(balls.Count == 0) {
-            return null;
-        }
-
-        GameObject ball = balls.Pop();
-
-        return ball;
+    public GameObject removeTopBall()
+    {
+        return Balls.Count == 0 ? null : Balls.Pop();
     }
 
     public void addBallToTube(GameObject ball) {
-        balls.Push(ball);
+        Balls.Push(ball);
     }
 
     public void changeSelectedValue() {
@@ -37,15 +31,14 @@ public class Tube : MonoBehaviour
     }
 
     public Vector3 getPositionOfTopBall() {
+        var topBall = removeTopBall();
 
-        GameObject topBall = this.removeTopBall();
-
-        if(topBall == null) {
+        if(topBall is null) {
            return new Vector3(this.transform.position.x, (float)-2.7, this.transform.position.z);
         }
 
-        Vector3 tubePosition = topBall.transform.position;
-        this.addBallToTube(topBall);
+        var tubePosition = topBall.transform.position;
+        addBallToTube(topBall);
 
         return tubePosition;
     }

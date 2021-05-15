@@ -14,6 +14,8 @@ public enum BoardState {
 
 public class Board : MonoBehaviour
 {
+    private Camera mainCamera;
+    
     [SerializeField] [Range(3,8)] private int tubeH;
     [SerializeField] [Range(3,12)] private int nTubes;
     [SerializeField] [Range(2,8)] private int nColors;
@@ -34,6 +36,7 @@ public class Board : MonoBehaviour
     
     private void Awake()
     {
+        mainCamera = Camera.main;
         _background = transform.GetChild(0);
     }
 
@@ -135,12 +138,12 @@ public class Board : MonoBehaviour
                 var newBall = Instantiate(ballPrefab, tubePosByIndex(i, j), 
                     Quaternion.identity, transform);
                 newBall.GetComponent<Ball>().SetColor(tube[j]);
-                tubesScripts[i].balls.Push(newBall);
+                tubesScripts[i].Balls.Push(newBall);
             }
         }
 
-       for(int i=0; i<_tubes.Count; i++) {
-            Stack<BallColor> rev = new Stack<BallColor>();
+        for(var i=0; i<_tubes.Count; i++) {
+            var rev = new Stack<BallColor>();
             while (_tubes[i].Count != 0) {
                 rev.Push(_tubes[i].Pop());
             }
@@ -161,7 +164,7 @@ public class Board : MonoBehaviour
 
     private List<Tuple<int, int>> GetAllMoves()
     {
-        List<Tuple<int, int>> result = new List<Tuple<int, int>>();
+        var result = new List<Tuple<int, int>>();
 
         if (_tubes.Count < 2) return result;
         for (var i = 0; i < _tubes.Count; i++)
@@ -214,11 +217,9 @@ public class Board : MonoBehaviour
     }
 
     private void checkMousePress() {
-
         if (Input.GetMouseButtonDown(0)) {
-            RaycastHit hit;
-            Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out hit, 100f)) {
+            var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            if (Physics.Raycast(ray, out var hit, 100f)) {
                 switch(boardState) {
                     case BoardState.Start:
                         if(selectTube(hit)) {
@@ -241,49 +242,42 @@ public class Board : MonoBehaviour
         }
     }
 
-    private Boolean selectTube(RaycastHit hit) {
+    private bool selectTube(RaycastHit hit) {
+        var gameObj = hit.collider.gameObject;
+        var tube = gameObj.GetComponent<Tube>();
         
-        Boolean valueReturn = false;
-
-        if(hit.collider.gameObject.tag == "tube" 
-        && !hit.collider.gameObject.GetComponent<Tube>().isSelected) {
-            hit.collider.gameObject.GetComponent<Tube>().changeSelectedValue();
-            if(boardState == BoardState.Start) {
-                valueReturn = removeTopBallFromTube(hit.collider.gameObject.GetComponent<Tube>().index);
-            }else {
-                valueReturn = putBallInTheDestinyTube(hit.collider.gameObject);
-            }
-            hit.collider.gameObject.GetComponent<Tube>().changeSelectedValue();
+        if(gameObj.CompareTag("tube") && !tube.isSelected) {
+            tube.changeSelectedValue();
+            var valueReturn = boardState == BoardState.Start ? removeTopBallFromTube(tube.index) : putBallInTheDestinyTube(hit.collider.gameObject);
+            tube.changeSelectedValue();
             return valueReturn;
         }
         return false;
     }  
 
-    private Boolean unselectedTube(RaycastHit hit) {
-
-        if(hit.collider.gameObject.tag == "tube" && hit.collider.gameObject.GetComponent<Tube>().isSelected) {
-            hit.collider.gameObject.GetComponent<Tube>().changeSelectedValue();
-            putBackBallToTheSameTube(hit.collider.gameObject.GetComponent<Tube>().index);
+    private bool unselectedTube(RaycastHit hit) {
+        var gameObj = hit.collider.gameObject;
+        var tube = gameObj.GetComponent<Tube>();
+        
+        if(gameObj.CompareTag("tube") && tube.isSelected) {
+            tube.changeSelectedValue();
+            putBackBallToTheSameTube(tube.index);
             return true;
         }
         return false;
     }
 
-    private Boolean removeTopBallFromTube(int index) {
-        
-        Tube tube = tubesScripts[index];
+    private bool removeTopBallFromTube(int index) {
+        var tube = tubesScripts[index];
 
-        if(tube.balls.Count == 0) {
+        if(tube.Balls.Count == 0) {
             return false;
         }
 
-        BallColor colorBall = _tubes[index].Pop();
-        
+        var colorBall = _tubes[index].Pop();
         colorOutside = colorBall;
-
-       
-
-        GameObject ball = tube.removeTopBall();
+        
+        var ball = tube.removeTopBall();
 
         ballOutside = ball;
         ballPositionTube = ball.transform.position;
@@ -294,25 +288,31 @@ public class Board : MonoBehaviour
 
     private void putBackBallToTheSameTube(int index) {
 
-        Tube tube = tubesScripts[index];
-        tube.balls.Push(ballOutside);
+        var tube = tubesScripts[index];
+        tube.Balls.Push(ballOutside);
         _tubes[index].Push(colorOutside);
 
         ballOutside.transform.position = ballPositionTube;
     }
 
-    private Boolean putBallInTheDestinyTube(GameObject tubeObject) {
+    private bool putBallInTheDestinyTube(GameObject tubeObject) {
 
-        int index = tubeObject.GetComponent<Tube>().index;
-        Tube tube = tubesScripts[index];
+        var index = tubeObject.GetComponent<Tube>().index;
+        var tube = tubesScripts[index];
         
-        if(tube.balls.Count == tubeH) {
+        if(tube.Balls.Count == tubeH) {
             return false;
         }
 
-        Debug.Log(index + " : " + colorOutside);
+        if (_tubes[index].Count > 0 && !_tubes[index].Peek().Equals(colorOutside))
+        {
+            return false;
+        }
+
+
+        print(index + " : " + colorOutside);
         
-        Vector3 positionTopBall = tube.getPositionOfTopBall();
+        var positionTopBall = tube.getPositionOfTopBall();
         
         tube.addBallToTube(ballOutside);
         _tubes[index].Push(colorOutside);
