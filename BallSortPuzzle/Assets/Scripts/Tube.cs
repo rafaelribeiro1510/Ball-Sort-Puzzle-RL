@@ -15,6 +15,8 @@ public class Tube : MonoBehaviour
         transform.GetChild(0).localScale = new Vector3(1, height + 0.2f, 1);
         var oldPos = transform.GetChild(1).position;
         transform.GetChild(1).position = new Vector3(oldPos.x, -height - 0.2f, oldPos.z);
+        var collider = GetComponent<BoxCollider>();
+        collider.size = new Vector3(collider.size.x, height*2, collider.size.z);
     }
 
     public GameObject removeTopBall()
