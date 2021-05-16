@@ -12,7 +12,7 @@ public class Tube : MonoBehaviour
     public readonly Stack<GameObject> Balls = new Stack<GameObject>();
     public bool isSelected;
 
-    private void Start()
+    private void Awake()
     {
         _collider = GetComponent<BoxCollider>();
     }

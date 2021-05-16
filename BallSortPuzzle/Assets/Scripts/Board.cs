@@ -10,7 +10,8 @@ public class Board : MonoBehaviour
     public enum State {
         Start = 0,
         OriginTubeSelected = 1,
-        GameOver = 2
+        MoveMade = 2,
+        GameOver = 3
     };
     
     [SerializeField] [Range(3,5)] public int tubeH;
@@ -33,12 +34,6 @@ public class Board : MonoBehaviour
         _background = transform.GetChild(0);
         _backgroundRenderer = _background.gameObject.GetComponent<MeshRenderer>();
         defaultMat = _backgroundRenderer.material;
-    }
-
-    private void Start()
-    {
-        InstantiateTubes();
-        RandomizeBalls();
     }
 
     public void InitializeBoardInXSeconds(int x)

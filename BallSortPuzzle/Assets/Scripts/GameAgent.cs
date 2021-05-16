@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 using Unity.MLAgents;
@@ -31,7 +32,12 @@ public class GameAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        if (state != Board.State.MoveMade)
+            return;
+        state = Board.State.Start;
+
         var discreteActions = actions.DiscreteActions;
+        print(discreteActions[0] + " ; " + discreteActions[1]);
         
         // For now, ignores values outside range of tubes ; Ideally, TODO change `Discrete Branch Size` to this value
         if (discreteActions[0] >= _board.Tubes.Count || discreteActions[1] >= _board.Tubes.Count) 
@@ -43,13 +49,13 @@ public class GameAgent : Agent
         {
             AddReward(WinReward);
             _board.SetSuccessMat();
-            EndEpisode();
+            //EndEpisode();
         }
         else if (_board.GetAllMoves().Count == 0)
         {
             AddReward(LossReward);
             _board.SetFailureMat();
-            EndEpisode();
+            //EndEpisode();
         }
         else
         {
@@ -70,6 +76,8 @@ public class GameAgent : Agent
 
     public override void OnEpisodeBegin()
     {
+        print("New ep!");
+        state = Board.State.Start;
         _board.InitializeBoard();
     }
 
@@ -169,6 +177,8 @@ public class GameAgent : Agent
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        actionsOut.DiscreteActions.Clear();
+        
         if (state == Board.State.GameOver) 
             return;
         
@@ -178,33 +188,25 @@ public class GameAgent : Agent
                 switch(state) {
                     case Board.State.Start:
                         if (SelectTube(hit)) {
+                            print("Selected");
                             state = Board.State.OriginTubeSelected;
                         }
                         break;
                     case Board.State.OriginTubeSelected:
                         if (UnselectedTube(hit)) {
-                            state = Board.State.Start;
+                            print("Put back");
+                            state = Board.State.MoveMade;
                         }
                         if (SelectTube(hit)) {
-                            state = Board.State.Start;
+                            print("Moved!");
+                            state = Board.State.MoveMade;
                             var discreteActions = actionsOut.DiscreteActions; 
                             discreteActions[0] = from;
                             discreteActions[1] = to;
                         }
                         break;
-                    default:
-                        break;
                 } 
             }
-        }
-        
-        if(_board.IsGameOver())
-        {
-            _board.InitializeBoardInXSeconds(2);
-        }
-        else if (_board.GetAllMoves().Count == 0)
-        {
-            _board.InitializeBoardInXSeconds(2);
         }
     }
 }
