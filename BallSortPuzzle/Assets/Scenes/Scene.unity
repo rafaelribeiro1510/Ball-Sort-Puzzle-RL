@@ -444,6 +444,7 @@ MonoBehaviour:
   tubeH: 4
   nTubes: 5
   nColors: 3
+  boardState: 0
   successMat: {fileID: 2100000, guid: a5d10c23614a5ec4e9cda8fa629eede3, type: 2}
   failureMat: {fileID: 2100000, guid: 2f2d1031a83c749439cf88e0d460ec85, type: 2}
   tubePrefab: {fileID: 4266243394238038281, guid: 22bea446571c5774186f3a7eef4a5092, type: 3}
@@ -488,7 +489,7 @@ MonoBehaviour:
     hasUpgradedBrainParametersWithActionSpec: 1
   m_Model: {fileID: 0}
   m_InferenceDevice: 0
-  m_BehaviorType: 0
+  m_BehaviorType: 1
   m_BehaviorName: Game
   TeamId: 0
   m_UseChildSensors: 1

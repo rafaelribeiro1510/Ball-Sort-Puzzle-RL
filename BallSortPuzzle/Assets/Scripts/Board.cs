@@ -5,29 +5,19 @@ using System.Linq;
 using UnityEngine;
 using Random = UnityEngine.Random;
 
-public enum BoardState {
-    Start = 0,
-    OriginTubeSelected = 1,
-    DestinyTubeSelected = 2,
-    GameOver = 3
-};
-
-
 public class Board : MonoBehaviour
 {
-    private Camera _mainCamera;
+    public enum State {
+        Start = 0,
+        OriginTubeSelected = 1,
+        GameOver = 2
+    };
     
-    [SerializeField] [Range(3,5)] private int tubeH;
+    [SerializeField] [Range(3,5)] public int tubeH;
     [SerializeField] [Range(3,10)] private int nTubes;
     [SerializeField] [Range(2,7)] private int nColors;
     public List<Stack<BallColor>> Tubes { get; private set; }
-    private List<Tube> _tubesScripts;
-    
-    
-    private GameObject ballOutside;
-    private Vector3 ballPositionTube;
-    private BallColor colorOutside;
-    private BoardState boardState = BoardState.Start;
+    public List<Tube> TubesScripts { get; private set; }
 
     private int _width;
     private Transform _background;
@@ -40,7 +30,6 @@ public class Board : MonoBehaviour
     
     private void Awake()
     {
-        _mainCamera = Camera.main;
         _background = transform.GetChild(0);
         _backgroundRenderer = _background.gameObject.GetComponent<MeshRenderer>();
         defaultMat = _backgroundRenderer.material;
@@ -52,29 +41,7 @@ public class Board : MonoBehaviour
         RandomizeBalls();
     }
 
-    private void Update() {
-        
-        if (boardState == BoardState.GameOver) 
-            return;
-        
-        CheckMousePress();
-        if(IsGameOver())
-        {
-            boardState = BoardState.GameOver;
-            _backgroundRenderer.material = successMat;
-            InitializeBoardInXSeconds(2);
-        }
-        else if (GetAllMoves().Count == 0)
-        {
-            boardState = BoardState.GameOver;
-            _backgroundRenderer.material = failureMat;
-            InitializeBoardInXSeconds(2);
-        }
-            
-        
-    }
-
-    private void InitializeBoardInXSeconds(int x)
+    public void InitializeBoardInXSeconds(int x)
     {
         print("Resettin board in " + x + " seconds");
         StartCoroutine(InitializeBoardInXSeconds_CR(x));
@@ -92,7 +59,6 @@ public class Board : MonoBehaviour
         RandomizeParameters();
         InstantiateTubes();
         RandomizeBalls();
-        boardState = BoardState.Start;
         _backgroundRenderer.material = defaultMat;
     }
 
@@ -115,7 +81,7 @@ public class Board : MonoBehaviour
             Destroy(transform.GetChild(i).gameObject);
 
         Tubes = new List<Stack<BallColor>>();
-        _tubesScripts = new List<Tube>();
+        TubesScripts = new List<Tube>();
         for (var i = 0; i < nTubes; i++)
         {
             Tubes.Add(new Stack<BallColor>(tubeH));
@@ -133,11 +99,9 @@ public class Board : MonoBehaviour
             script.Height = tubeH / 2f;
             script.Resize();
             script.index = id;
-            _tubesScripts.Add(script);
+            TubesScripts.Add(script);
             id++;
         }
-
-        
     }
 
     private void RandomizeBalls()
@@ -172,7 +136,7 @@ public class Board : MonoBehaviour
                 var newBall = Instantiate(ballPrefab, tubePosByIndex(i, j), 
                     Quaternion.identity, transform);
                 newBall.GetComponent<Ball>().SetColor(tube[j]);
-                _tubesScripts[i].Balls.Push(newBall);
+                TubesScripts[i].Balls.Push(newBall);
             }
         }
 
@@ -247,107 +211,13 @@ public class Board : MonoBehaviour
         return new Vector3(i * (_width / nTubes) - _width / 2 + 1, h - tubeH / 2f + 0.4f, -0.6f);
     }
 
-    private void CheckMousePress() {
-        if (Input.GetMouseButtonDown(0)) {
-            var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
-            if (Physics.Raycast(ray, out var hit, 100f)) {
-                switch(boardState) {
-                    case BoardState.Start:
-                        if(SelectTube(hit)) {
-                            boardState = BoardState.OriginTubeSelected;
-                        }
-                        break;
-                    case BoardState.OriginTubeSelected:
-                        if(UnselectedTube(hit)) {
-                            boardState = BoardState.Start;
-                        }
-                        if(SelectTube(hit)) {
-                            boardState = BoardState.Start;
-                        }
-                        break;
-                    default:
-                        break;
-
-                } 
-            }
-        }
+    public void SetSuccessMat()
+    {
+        _backgroundRenderer.material = successMat;
     }
-
-    private bool SelectTube(RaycastHit hit) {
-        var gameObj = hit.collider.gameObject;
-        var tube = gameObj.GetComponent<Tube>();
-
-        if (!gameObj.CompareTag("tube") || tube.isSelected) return false;
-        
-        tube.changeSelectedValue();
-        var valueReturn = boardState == BoardState.Start ? RemoveTopBallFromTube(tube.index) : PutBallInTheDestinyTube(hit.collider.gameObject);
-        tube.changeSelectedValue();
-        return valueReturn;
-    }  
-
-    private bool UnselectedTube(RaycastHit hit) {
-        var gameObj = hit.collider.gameObject;
-        var tube = gameObj.GetComponent<Tube>();
-
-        if (!gameObj.CompareTag("tube") || !tube.isSelected) return false;
-        
-        tube.changeSelectedValue();
-        PutBackBallToTheSameTube(tube.index);
-        return true;
-    }
-
-    private bool RemoveTopBallFromTube(int index) {
-        var tube = _tubesScripts[index];
-
-        if(tube.Balls.Count == 0) {
-            return false;
-        }
-
-        var colorBall = Tubes[index].Pop();
-        colorOutside = colorBall;
-        
-        var ball = tube.removeTopBall();
-
-        ballOutside = ball;
-        ballPositionTube = ball.transform.position;
-        ball.transform.position = new Vector3(ball.transform.position.x, tubeH, ball.transform.position.z);
-
-        return true;
-    }
-
-    private void PutBackBallToTheSameTube(int index) {
-
-        var tube = _tubesScripts[index];
-        tube.Balls.Push(ballOutside);
-        Tubes[index].Push(colorOutside);
-
-        ballOutside.transform.position = ballPositionTube;
-    }
-
-    private bool PutBallInTheDestinyTube(GameObject tubeObject) {
-
-        var index = tubeObject.GetComponent<Tube>().index;
-        var tube = _tubesScripts[index];
-        
-        if(tube.Balls.Count == tubeH) {
-            return false;
-        }
-
-        if (Tubes[index].Count > 0 && !Tubes[index].Peek().Equals(colorOutside))
-        {
-            return false;
-        }
-
-
-        // print(index + " : " + colorOutside);
-        
-        var positionTopBall = tube.getPositionOfTopBall();
-        
-        tube.addBallToTube(ballOutside);
-        Tubes[index].Push(colorOutside);
-        ballOutside.transform.position = new Vector3(positionTopBall.x, positionTopBall.y+1, positionTopBall.z);
-        ballOutside = null;
-
-        return true;
+    
+    public void SetFailureMat()
+    {
+        _backgroundRenderer.material = failureMat;
     }
 }
