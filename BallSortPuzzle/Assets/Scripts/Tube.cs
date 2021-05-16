@@ -45,7 +45,7 @@ public class Tube : MonoBehaviour
         var topBall = RemoveTopBall();
 
         if(topBall is null) {
-           return new Vector3(transform.position.x, -2.7f, transform.position.z);
+           return new Vector3(transform.position.x, -Height - 0.6f, transform.position.z);
         }
 
         var tubePosition = topBall.transform.position;

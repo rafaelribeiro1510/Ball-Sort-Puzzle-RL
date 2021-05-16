@@ -3,6 +3,7 @@ using System.Linq;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
+using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 
 public class GameAgent : Agent
@@ -74,6 +75,7 @@ public class GameAgent : Agent
         }
     }
 
+    [ContextMenu("New Episode")]
     public override void OnEpisodeBegin()
     {
         print("New ep!");
