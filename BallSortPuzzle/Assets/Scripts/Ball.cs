@@ -5,7 +5,7 @@ using UnityEngine;
 public class Ball : MonoBehaviour
 {
     private MeshRenderer _renderer;
-    [SerializeField] private BallColor color;
+    [SerializeField] public BallColor color;
     [Serializable] public struct MakeShiftDictionaryEntry
     {
         public BallColor key;
