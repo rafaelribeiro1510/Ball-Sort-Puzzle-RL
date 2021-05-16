@@ -18,14 +18,17 @@ public class GameAgent : Agent
 
     public override void CollectObservations(VectorSensor sensor)
     {
+        /*
         foreach (var convertedTube in _board.Tubes.Select(tube => tube.Select(ballColor => (float) ballColor).ToList()))
         {
             sensor.AddObservation(convertedTube);
         }
+        */
     }
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        /*
         var discreteActions = actions.DiscreteActions;
         
         // For now, ignores values outside range of tubes ; Ideally, TODO change `Discrete Branch Size` to this value
@@ -34,16 +37,33 @@ public class GameAgent : Agent
             return;
         }
 
-        if (!_board.CanMove(discreteActions[0], discreteActions[1]))
+        if (_board.IsGameOver())
+        {
+            // Reward
+            EndEpisode();
+        }
+        else if (_board.GetAllMoves().Count == 0)
         {
             // Punish
+            EndEpisode();
         }
         else
         {
-            // Reward
+            if (!_board.CanMove(discreteActions[0], discreteActions[1]))
+            {
+                // Punish
+                return;
+            }
+            else
+            {
+                // Reward
+            }    
         }
-        
-        
+        */
     }
 
+    public override void OnEpisodeBegin()
+    {
+        //_board.InitializeBoard();
+    }
 }

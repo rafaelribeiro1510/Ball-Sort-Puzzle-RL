@@ -15,12 +15,12 @@ public enum BoardState {
 
 public class Board : MonoBehaviour
 {
-    private Camera mainCamera;
+    private Camera _mainCamera;
     
     [SerializeField] [Range(3,5)] private int tubeH;
     [SerializeField] [Range(3,10)] private int nTubes;
     [SerializeField] [Range(2,7)] private int nColors;
-    private List<Stack<BallColor>> _tubes;
+    public List<Stack<BallColor>> Tubes { get; private set; }
     private List<Tube> _tubesScripts;
     
     
@@ -40,7 +40,7 @@ public class Board : MonoBehaviour
     
     private void Awake()
     {
-        mainCamera = Camera.main;
+        _mainCamera = Camera.main;
         _background = transform.GetChild(0);
         _backgroundRenderer = _background.gameObject.GetComponent<MeshRenderer>();
         defaultMat = _backgroundRenderer.material;
@@ -76,6 +76,7 @@ public class Board : MonoBehaviour
 
     private void InitializeBoardInXSeconds(int x)
     {
+        print("Resettin board in " + x + " seconds");
         StartCoroutine(InitializeBoardInXSeconds_CR(x));
     }
     
@@ -86,7 +87,7 @@ public class Board : MonoBehaviour
     }
     
     [ContextMenu("New Board")]
-    private void InitializeBoard()
+    public void InitializeBoard()
     {
         RandomizeParameters();
         InstantiateTubes();
@@ -175,13 +176,15 @@ public class Board : MonoBehaviour
             }
         }
 
-        for(var i=0; i<_tubes.Count; i++) {
+        for(var i=0; i < Tubes.Count; i++) {
             var rev = new Stack<BallColor>();
-            while (_tubes[i].Count != 0) {
-                rev.Push(_tubes[i].Pop());
+            while (Tubes[i].Count != 0) {
+                rev.Push(Tubes[i].Pop());
             }
-            _tubes[i] = rev;
-        }    
+            Tubes[i] = rev;
+        }   
+        
+        if (GetAllMoves().Count == 0) InitializeBoard();
     }
 
     public bool CanMove(int from, int to)
@@ -195,7 +198,7 @@ public class Board : MonoBehaviour
                  Tubes[to].Peek() == Tubes[from].Peek()));
     }
 
-    private List<Tuple<int, int>> GetAllMoves()
+    public List<Tuple<int, int>> GetAllMoves()
     {
         var result = new List<Tuple<int, int>>();
 
@@ -246,7 +249,7 @@ public class Board : MonoBehaviour
 
     private void CheckMousePress() {
         if (Input.GetMouseButtonDown(0)) {
-            var ray = mainCamera.ScreenPointToRay(Input.mousePosition);
+            var ray = _mainCamera.ScreenPointToRay(Input.mousePosition);
             if (Physics.Raycast(ray, out var hit, 100f)) {
                 switch(boardState) {
                     case BoardState.Start:
@@ -300,7 +303,7 @@ public class Board : MonoBehaviour
             return false;
         }
 
-        var colorBall = _tubes[index].Pop();
+        var colorBall = Tubes[index].Pop();
         colorOutside = colorBall;
         
         var ball = tube.removeTopBall();
@@ -316,7 +319,7 @@ public class Board : MonoBehaviour
 
         var tube = _tubesScripts[index];
         tube.Balls.Push(ballOutside);
-        _tubes[index].Push(colorOutside);
+        Tubes[index].Push(colorOutside);
 
         ballOutside.transform.position = ballPositionTube;
     }
@@ -330,7 +333,7 @@ public class Board : MonoBehaviour
             return false;
         }
 
-        if (_tubes[index].Count > 0 && !_tubes[index].Peek().Equals(colorOutside))
+        if (Tubes[index].Count > 0 && !Tubes[index].Peek().Equals(colorOutside))
         {
             return false;
         }
@@ -341,7 +344,7 @@ public class Board : MonoBehaviour
         var positionTopBall = tube.getPositionOfTopBall();
         
         tube.addBallToTube(ballOutside);
-        _tubes[index].Push(colorOutside);
+        Tubes[index].Push(colorOutside);
         ballOutside.transform.position = new Vector3(positionTopBall.x, positionTopBall.y+1, positionTopBall.z);
         ballOutside = null;
 
