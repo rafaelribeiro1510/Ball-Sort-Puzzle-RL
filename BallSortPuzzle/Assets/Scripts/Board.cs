@@ -7,11 +7,11 @@ using Random = UnityEngine.Random;
 
 public class Board : MonoBehaviour
 {
-    [SerializeField] [Range(3,8)] private int tubeH;
-    [SerializeField] [Range(3,12)] private int nTubes;
-    [SerializeField] [Range(2,8)] private int nColors;
-    private List<Stack<BallColor>> _tubes;
-    
+    [SerializeField] [Range(3,5)] private int tubeH;
+    [SerializeField] [Range(3,10)] private int nTubes;
+    [SerializeField] [Range(2,7)] private int nColors;
+    public List<Stack<BallColor>> Tubes { get; private set; }
+
     private int _width;
     private Transform _background;
 
@@ -35,7 +35,7 @@ public class Board : MonoBehaviour
         RandomizeParameters();
         InstantiateTubes();
         RandomizeBalls();
-    }
+        }
 
     private void RandomizeParameters()
     {
@@ -55,10 +55,10 @@ public class Board : MonoBehaviour
         for (var i = 1; i < transform.childCount; i++)
             Destroy(transform.GetChild(i).gameObject);
 
-        _tubes = new List<Stack<BallColor>>();
+        Tubes = new List<Stack<BallColor>>();
         for (var i = 0; i < nTubes; i++)
         {
-            _tubes.Add(new Stack<BallColor>(tubeH));
+            Tubes.Add(new Stack<BallColor>(tubeH));
         }
         
         _width = nTubes * 3;
@@ -93,15 +93,15 @@ public class Board : MonoBehaviour
                 do
                 {
                     tube = (Random.Range(0, nTubes));
-                } while (_tubes[tube].Count >= tubeH);
-                _tubes[tube].Push(iColor);
+                } while (Tubes[tube].Count >= tubeH);
+                Tubes[tube].Push(iColor);
                 --numPiecesPerColor[iColor];
             }
         }
 
-        for (var i = 0 ; i < _tubes.Count ; i++)
+        for (var i = 0 ; i < Tubes.Count ; i++)
         {
-            var tube = _tubes[i].ToList();
+            var tube = Tubes[i].ToList();
             for (var j = 0 ; j < tube.Count ; j++)
             {
                 var newBall = Instantiate(ballPrefab, tubePosByIndex(i, j), 
@@ -111,25 +111,25 @@ public class Board : MonoBehaviour
         }
     }
 
-    private bool CanMove(int from, int to)
+    public bool CanMove(int from, int to)
     {
         if (from == to) return false;
         if (@from >= nTubes || to >= nTubes) return false;
 
-        return (_tubes[from].Count != 0 &&
-                _tubes[to].Count < tubeH &&
-                (_tubes[to].Count == 0 ||
-                 _tubes[to].Peek() == _tubes[from].Peek()));
+        return (Tubes[from].Count != 0 &&
+                Tubes[to].Count < tubeH &&
+                (Tubes[to].Count == 0 ||
+                 Tubes[to].Peek() == Tubes[from].Peek()));
     }
 
     private List<Tuple<int, int>> GetAllMoves()
     {
         List<Tuple<int, int>> result = new List<Tuple<int, int>>();
 
-        if (_tubes.Count < 2) return result;
-        for (var i = 0; i < _tubes.Count; i++)
+        if (Tubes.Count < 2) return result;
+        for (var i = 0; i < Tubes.Count; i++)
         {
-            for (var j = 1; j < _tubes.Count; j++)
+            for (var j = 1; j < Tubes.Count; j++)
             {
                 if (i == j) continue;
                 if (CanMove(i,j)) result.Add(new Tuple<int, int>(i, j));
@@ -140,9 +140,9 @@ public class Board : MonoBehaviour
         return result;
     }
 
-    private bool IsGameOver()
+    public bool IsGameOver()
     {
-        foreach (var tube in _tubes)
+        foreach (var tube in Tubes)
         {
             var s = tube.Count;
             if (!(s == 0 || s == tubeH)) return false;
