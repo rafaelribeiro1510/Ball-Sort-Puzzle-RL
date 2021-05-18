@@ -51,10 +51,10 @@ public class Board : MonoBehaviour
     [ContextMenu("New Board")]
     public void InitializeBoard()
     {
-        RandomizeParameters();
+        //RandomizeParameters();
         InstantiateTubes();
         RandomizeBalls();
-        _backgroundRenderer.material = defaultMat;
+        //_backgroundRenderer.material = defaultMat;
     }
 
     private void RandomizeParameters()
@@ -87,8 +87,8 @@ public class Board : MonoBehaviour
         var id = 0;
         for (var i = 0; i < nTubes; i++)
         {
-            var newTube = Instantiate(tubePrefab, tubePosByIndex(i), // Z hardcoded 
-                Quaternion.identity, transform);
+            var newTube = Instantiate(tubePrefab, transform, false);
+            newTube.transform.localPosition = tubePosByIndex(i);
             
             var script = newTube.GetComponent<Tube>(); 
             script.Height = tubeH / 2f;
@@ -128,8 +128,9 @@ public class Board : MonoBehaviour
             var tube = Tubes[i].ToList();
             for (var j = 0 ; j < tube.Count ; j++)
             {
-                var newBall = Instantiate(ballPrefab, tubePosByIndex(i, j), 
-                    Quaternion.identity, transform);
+                var newBall = Instantiate(ballPrefab, transform, false);
+                newBall.transform.localPosition = tubePosByIndex(i, j);
+                
                 newBall.GetComponent<Ball>().SetColor(tube[j]);
                 TubesScripts[i].Balls.Push(newBall);
             }

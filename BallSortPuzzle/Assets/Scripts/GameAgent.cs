@@ -13,6 +13,7 @@ public class GameAgent : Agent
 
     // Rewards
     private const float MoveMissReward = -0.1f;
+    private const float MoveGoodHitReward = 5f;
     private const float MoveHitReward = 2f;
     private const float LossReward = -5f;
     private const float WinReward = 50f;
@@ -33,30 +34,35 @@ public class GameAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
-        if (state != Board.State.MoveMade)
-            return;
-        state = Board.State.Start;
+        if (heuristicMode)
+        {
+            if (state != Board.State.MoveMade)
+                return;
+            state = Board.State.Start;
+        }
 
         var discreteActions = actions.DiscreteActions;
-        print(discreteActions[0] + " ; " + discreteActions[1]);
+        //print(discreteActions[0] + " ; " + discreteActions[1]);
         
         // For now, ignores values outside range of tubes ; Ideally, TODO change `Discrete Branch Size` to this value
         if (discreteActions[0] >= _board.Tubes.Count || discreteActions[1] >= _board.Tubes.Count) 
         {
-            return;
+            //return;
         }
 
         if (_board.IsGameOver())
         {
             AddReward(WinReward);
+            print("Won!");
             _board.SetSuccessMat();
-            //EndEpisode();
+            EndEpisode();
         }
         else if (_board.GetAllMoves().Count == 0)
         {
             AddReward(LossReward);
+            print("Locked!");
             _board.SetFailureMat();
-            //EndEpisode();
+            EndEpisode();
         }
         else
         {
@@ -66,8 +72,9 @@ public class GameAgent : Agent
             }
             else
             {
-                AddReward(MoveHitReward);
-                
+                // Reward moving balls on top of other balls, as opposed to empty tubes
+                AddReward(_board.Tubes[discreteActions[1]].Count == 0 ? MoveHitReward : MoveGoodHitReward);
+
                 // Visually move ball, and update board model
                 RemoveTopBallFromTube(discreteActions[0]);
                 PutBallInTheDestinyTube(discreteActions[1]);
@@ -78,13 +85,13 @@ public class GameAgent : Agent
     [ContextMenu("New Episode")]
     public override void OnEpisodeBegin()
     {
-        print("New ep!");
         state = Board.State.Start;
         _board.InitializeBoard();
     }
 
     // Human Interface functions (Heuristic)
-    
+
+    private bool heuristicMode;
     private GameObject ballOutside;
     private Vector3 ballPositionTube;
     private BallColor colorOutside;
@@ -139,8 +146,8 @@ public class GameAgent : Agent
         var ball = tube.RemoveTopBall();
 
         ballOutside = ball;
-        ballPositionTube = ball.transform.position;
-        ball.transform.position = new Vector3(ball.transform.position.x, _board.tubeH, ball.transform.position.z);
+        ballPositionTube = ball.transform.localPosition;
+        ball.transform.localPosition = new Vector3(ball.transform.localPosition.x, _board.tubeH, ball.transform.localPosition.z);
 
         return true;
     }
@@ -151,7 +158,7 @@ public class GameAgent : Agent
         tube.Balls.Push(ballOutside);
         _board.Tubes[index].Push(colorOutside);
 
-        ballOutside.transform.position = ballPositionTube;
+        ballOutside.transform.localPosition = ballPositionTube;
     }
 
     private bool PutBallInTheDestinyTube(int index)
@@ -171,7 +178,7 @@ public class GameAgent : Agent
         
         tube.AddBallToTube(ballOutside);
         _board.Tubes[index].Push(colorOutside);
-        ballOutside.transform.position = new Vector3(positionTopBall.x, positionTopBall.y+1, positionTopBall.z);
+        ballOutside.transform.localPosition = new Vector3(positionTopBall.x, positionTopBall.y+1, positionTopBall.z);
         ballOutside = null;
 
         return true;
@@ -179,6 +186,8 @@ public class GameAgent : Agent
 
     public override void Heuristic(in ActionBuffers actionsOut)
     {
+        heuristicMode = true;
+        
         actionsOut.DiscreteActions.Clear();
         
         if (state == Board.State.GameOver) 
