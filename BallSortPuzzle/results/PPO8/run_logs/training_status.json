@@ -1,0 +1,29 @@
+{
+    "Game": {
+        "checkpoints": [
+            {
+                "steps": 499957,
+                "file_path": "results\\PPO8\\Game\\Game-499957.onnx",
+                "reward": 1.1130000092089176,
+                "creation_time": 1621594773.9533358
+            },
+            {
+                "steps": 500803,
+                "file_path": "results\\PPO8\\Game\\Game-500803.onnx",
+                "reward": 1.1334999914979562,
+                "creation_time": 1621594774.1971462
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 500803,
+            "file_path": "results\\PPO8\\Game.onnx",
+            "reward": 1.1334999914979562,
+            "creation_time": 1621594774.1971462
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.2.0",
+        "mlagents_version": "0.25.1",
+        "torch_version": "1.7.0+cu110"
+    }
+}

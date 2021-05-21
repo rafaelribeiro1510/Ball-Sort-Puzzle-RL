@@ -12,11 +12,11 @@ public class GameAgent : Agent
     private Board _board;
 
     // Rewards
-    private const float MoveMissReward = -0.1f;
-    private const float MoveGoodHitReward = 5f;
-    private const float MoveHitReward = 2f;
-    private const float LossReward = -5f;
-    private const float WinReward = 50f;
+    private const float MoveMissReward = 0f;
+    private const float MoveReward = -0.001f;
+    private const float MoveHitReward = 0.01f;
+    private const float LossReward = -1f;
+    private const float WinReward = 1f;
 
     private void Awake()
     {
@@ -44,23 +44,28 @@ public class GameAgent : Agent
         var discreteActions = actions.DiscreteActions;
         //print(discreteActions[0] + " ; " + discreteActions[1]);
         
+        /*
         // For now, ignores values outside range of tubes ; Ideally, TODO change `Discrete Branch Size` to this value
         if (discreteActions[0] >= _board.Tubes.Count || discreteActions[1] >= _board.Tubes.Count) 
         {
-            //return;
+            return;
         }
+        */
+        
+        // Try making as few moves as possible
+        AddReward(MoveReward);
 
         if (_board.IsGameOver())
         {
             AddReward(WinReward);
-            print("Won!");
+            //print("Won!");
             _board.SetSuccessMat();
             EndEpisode();
         }
         else if (_board.GetAllMoves().Count == 0)
         {
-            AddReward(LossReward);
-            print("Locked!");
+            SetReward(LossReward);
+            //print("Locked!");
             _board.SetFailureMat();
             EndEpisode();
         }
@@ -73,7 +78,8 @@ public class GameAgent : Agent
             else
             {
                 // Reward moving balls on top of other balls, as opposed to empty tubes
-                AddReward(_board.Tubes[discreteActions[1]].Count == 0 ? MoveHitReward : MoveGoodHitReward);
+                // AddReward(_board.Tubes[discreteActions[1]].Count == 0 ? MoveHitReward : MoveGoodHitReward);
+                AddReward(MoveHitReward);
 
                 // Visually move ball, and update board model
                 RemoveTopBallFromTube(discreteActions[0]);
