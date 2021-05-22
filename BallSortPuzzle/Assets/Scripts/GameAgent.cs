@@ -12,6 +12,8 @@ public class GameAgent : Agent
     private Board _board;
 
     // Rewards
+    private float nMoves = 0;
+    private const float MaxMoves = 500;
     private const float MoveMissReward = 0f;
     private const float MoveReward = -0.001f;
     private const float MoveHitReward = 0.01f;
@@ -53,18 +55,18 @@ public class GameAgent : Agent
         */
         
         // Try making as few moves as possible
-        AddReward(MoveReward);
+        // AddReward(MoveReward);
 
         if (_board.IsGameOver())
         {
-            AddReward(WinReward);
+            SetReward(WinFactor());
             //print("Won!");
             _board.SetSuccessMat();
             EndEpisode();
         }
         else if (_board.GetAllMoves().Count == 0)
         {
-            SetReward(LossReward);
+            SetReward(LoseFactor());
             //print("Locked!");
             _board.SetFailureMat();
             EndEpisode();
@@ -73,24 +75,38 @@ public class GameAgent : Agent
         {
             if (!_board.CanMove(discreteActions[0], discreteActions[1]))
             {
-                AddReward(MoveMissReward);
+                // AddReward(MoveMissReward);
             }
             else
             {
                 // Reward moving balls on top of other balls, as opposed to empty tubes
                 // AddReward(_board.Tubes[discreteActions[1]].Count == 0 ? MoveHitReward : MoveGoodHitReward);
-                AddReward(MoveHitReward);
+                
+                // AddReward(MoveHitReward);
 
                 // Visually move ball, and update board model
+                nMoves++;
                 RemoveTopBallFromTube(discreteActions[0]);
                 PutBallInTheDestinyTube(discreteActions[1]);
             }    
         }
     }
 
+    private float WinFactor()
+    {
+        return 0.5f + (MaxMoves / nMoves) / (MaxMoves*2f);
+        //return 1f;
+    }
+
+    private float LoseFactor()
+    {
+        return -1f;
+    }
+
     [ContextMenu("New Episode")]
     public override void OnEpisodeBegin()
     {
+        nMoves = 0;
         state = Board.State.Start;
         _board.InitializeBoard();
     }

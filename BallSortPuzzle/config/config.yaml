@@ -2,10 +2,10 @@ behaviors:
   Game:
     trainer_type: ppo
     hyperparameters:
-      batch_size: 128
-      buffer_size: 4096
-      learning_rate: 1.0e-5
-      beta: 5.0e-2
+      batch_size: 64
+      buffer_size: 2048
+      learning_rate: 0.0003
+      beta: 0.05
       epsilon: 0.2
       lambd: 0.95
       num_epoch: 4
@@ -18,6 +18,6 @@ behaviors:
       extrinsic:
         gamma: 0.99
         strength: 1.0
-    max_steps: 500000
-    time_horizon: 48
-    summary_freq: 25000
+    max_steps: 10000000
+    time_horizon: 64
+    summary_freq: 10000

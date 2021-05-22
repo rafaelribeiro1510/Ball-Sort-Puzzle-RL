@@ -2300,6 +2300,10 @@ PrefabInstance:
       propertyPath: m_BrainParameters.m_ActionSpec.BranchSizes.Array.data[1]
       value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 8897058027432247993, guid: 6f0e80e16d5622c418754e341136aa96, type: 3}
+      propertyPath: DecisionPeriod
+      value: 5
+      objectReference: {fileID: 0}
     - target: {fileID: 8897058027432247996, guid: 6f0e80e16d5622c418754e341136aa96, type: 3}
       propertyPath: m_Name
       value: Board
