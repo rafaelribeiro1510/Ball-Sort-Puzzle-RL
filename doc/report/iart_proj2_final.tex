@@ -1,0 +1,326 @@
+% Copyright (C) 2021 Diogo Rodrigues, Rafael Ribeiro, Bernardo Ferreira
+% Distributed under the terms of the GNU General Public License, version 3
+
+\documentclass{beamer}
+% Encodings (to render letters with diacritics and special characters)
+\usepackage[utf8]{inputenc}
+% Language
+\usepackage[english]{babel}
+\usepackage{verbatim}
+
+\usepackage{multicol}
+
+\usetheme{Madrid}
+\usecolortheme{default}
+
+\pdfstringdefDisableCommands{
+  \def\\{}
+  \def\texttt#1{<#1>}
+}
+
+\newcommand{\email}[1]{
+{\footnotesize \texttt{\href{mailto:#1}{#1}} }
+}
+
+\usepackage{caption}
+\DeclareCaptionFont{black}{\color{black}}
+\DeclareCaptionFormat{listing}{{\tiny \textbf{#1}#2#3}}
+\captionsetup[lstlisting]{format=listing,labelfont=black,textfont=black}
+
+\usepackage{listings}
+\lstset{
+    frame=tb, % draw frame at top and bottom of the code
+    basewidth  = {0.5em,0.5em},
+    numbers=left, % display line numbers on the left
+    showstringspaces=false, % don't mark spaces in strings  
+    commentstyle=\color{green}, % comment color
+    keywordstyle=\color{blue}, % keyword color
+    stringstyle=\color{red}, % string color
+	aboveskip=-0.2em,
+    belowskip=-0.2em,
+    basicstyle=\tiny
+}
+\lstset{literate=
+  {á}{{\'a}}1 {é}{{\'e}}1 {í}{{\'i}}1 {ó}{{\'o}}1 {ú}{{\'u}}1
+  {Á}{{\'A}}1 {É}{{\'E}}1 {Í}{{\'I}}1 {Ó}{{\'O}}1 {Ú}{{\'U}}1
+  {à}{{\`a}}1 {è}{{\`e}}1 {ì}{{\`i}}1 {ò}{{\`o}}1 {ù}{{\`u}}1
+  {À}{{\`A}}1 {È}{{\'E}}1 {Ì}{{\`I}}1 {Ò}{{\`O}}1 {Ù}{{\`U}}1
+  {ä}{{\"a}}1 {ë}{{\"e}}1 {ï}{{\"i}}1 {ö}{{\"o}}1 {ü}{{\"u}}1
+  {Ä}{{\"A}}1 {Ë}{{\"E}}1 {Ï}{{\"I}}1 {Ö}{{\"O}}1 {Ü}{{\"U}}1
+  {â}{{\^a}}1 {ê}{{\^e}}1 {î}{{\^i}}1 {ô}{{\^o}}1 {û}{{\^u}}1
+  {Â}{{\^A}}1 {Ê}{{\^E}}1 {Î}{{\^I}}1 {Ô}{{\^O}}1 {Û}{{\^U}}1
+  {Ã}{{\~A}}1 {ã}{{\~a}}1 {Õ}{{\~O}}1 {õ}{{\~o}}1
+  {œ}{{\oe}}1 {Œ}{{\OE}}1 {æ}{{\ae}}1 {Æ}{{\AE}}1 {ß}{{\ss}}1
+  {ű}{{\H{u}}}1 {Ű}{{\H{U}}}1 {ő}{{\H{o}}}1 {Ő}{{\H{O}}}1
+  {ç}{{\c c}}1 {Ç}{{\c C}}1 {ø}{{\o}}1 {å}{{\r a}}1 {Å}{{\r A}}1
+  {€}{{\euro}}1 {£}{{\pounds}}1 {«}{{\guillemotleft}}1
+  {»}{{\guillemotright}}1 {ñ}{{\~n}}1 {Ñ}{{\~N}}1 {¿}{{?`}}1
+}
+
+\usepackage{dirtree}
+
+\usepackage[style=british]{csquotes}
+
+\usepackage{tabularx}
+
+\usepackage{graphicx}
+	\graphicspath{{./images/}{../documentacao/}}
+ 
+%Information to be included in the title page:
+\AtBeginDocument{
+\title[Ball Sort Puzzle - RL (Final delivery)]{Ball Sort Puzzle -- Reinforcement Learning}
+\subtitle[]{Final delivery}
+\author[Group 48]{
+\begin{tabular}{r l}
+	\email{up201806330@fe.up.pt} & Rafael Soares Ribeiro               \\
+	\email{up201806429@fe.up.pt} & Diogo Miguel Ferreira Rodrigues     \\
+	\email{up201806581@fe.up.pt} & Bernardo António Magalhães Ferreira
+\end{tabular}
+}
+\institute[FEUP/IART]{Faculdade de Engenharia da Universidade do Porto \\ Artificial Intelligence (IART) -- Group 48}
+\date[16/05/2021]{24th of May, 2021}
+}
+
+\begin{document}
+\frame{\titlepage}
+
+\begin{frame}
+\frametitle{1. Work specification}
+\framesubtitle{1.1. Problem description}
+
+Solve solitaire game \href{https://play.google.com/store/apps/details?id=com.spicags.ballsort&hl=pt_PT&gl=US}{\textit{Ball Sort Puzzle}} by \href{https://play.google.com/store/apps/developer?id=Spica+Game+Studio}{Spica Game Studio} heuristic search methods.
+
+Starting with a set of differently coloured balls distributed at random in different tubes, sort them so each tube has balls of a single color.
+
+\vspace{0.5em}
+
+\begin{minipage}{0.42\textwidth}
+  \begin{itemize}
+    \itemsep0em
+    \item There are more tubes than colors;
+    \item There are as many balls of a color as can fit in a tube;
+    \item Cannot place more balls in a tube than it can hold;
+    \item Can only move a ball on top of same-color ball (or tube is empty).
+  \end{itemize}
+\end{minipage}%
+\begin{minipage}{0.58\textwidth}
+  \centering
+  \includegraphics[width=29mm]{img/lvl6-begin.png}
+  \includegraphics[width=29mm]{img/lvl6-end.png}
+\end{minipage}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{1. Work specification}
+\framesubtitle{1.2. Problem formalization}
+
+\textbf{State} | Vector $S = \langle t_1, t_2, ..., t_N \rangle$ of $N$ tubes with maximum capacity $H$, where tube $i$ is a stack $t_i = \langle t_i(1), t_i(2), ..., t_i(h_i) \rangle$ with $h_i$ balls ($0 \leq h_i \leq H$), where $t_i(1)$ is the color of the ball at the bottom, and $t_i(h_i)$ the color at the top. There are $C$ colors ($C < N$) numbered sequentially, thus $\forall i, j,~1 \leq t_i(j) \leq C$.
+
+\textbf{Action} | The only action is a move:
+\begin{itemize}
+  \item Given state $S$, choose origin \& destination tubes $1 \leq i, j \leq N$ ($i \neq j$).
+  \item Pre-conditions: $h_i \geq 1$, $h_j < H$ and either $h_j = 0$ or $t_i(h_i)=t_j(h_j)$.
+  \item Cost: $1$ (one).
+  \item Post-conditions: $S'$ is built from $S$, except $t_i$ is a ball shorter (say it had color $c$), and $t_j$ has one more ball at the top with color $c$.
+\end{itemize}
+
+\textbf{Policy} | This is what we want to find.
+
+\end{frame}
+
+\begin{frame}
+
+\textbf{Reward} | We first tried the following reward function:
+
+\begin{equation*}
+  r = \begin{cases}
+    WinReward & \text{if wins} \\
+    LoseReward & \text{if loses} \\
+    MoveHitReward & \text{if chosen move is valid} \\
+    MoveMissReward & \text{if chosen move is invalid}
+  \end{cases}
+\end{equation*}
+
+Sample values:
+\begin{center}
+  \footnotesize
+  \begin{tabular}{c | c}
+    $WinReward = +1$ & $LoseReward=-1$ \\ \hline
+    $MoveHitReward = +0.01$ & $MoveMissReward = -0.01$
+  \end{tabular}
+\end{center}
+
+Then we tried a new reward function:
+
+\begin{equation*}
+  r = \begin{cases}
+    1 - \frac{1}{4}\frac{nMisses}{MaxMoves} - \frac{1}{4} \frac{nMoves}{MaxMoves} & \text{if wins} \\
+    -1 & \text{if loses} \\
+    0 & \text{otherwise}
+  \end{cases}
+\end{equation*}
+
+($MaxMoves = 5000$)
+
+\end{frame}
+
+\begin{frame}
+\frametitle{1. Work specification}
+\framesubtitle{1.3. Solution description}
+
+\begin{enumerate}
+  \itemsep0em
+  \item Implement the game
+  \item Implement a human-friendly interface.
+  \item Use machine learning algorithms to solve the game, and compare performances.
+\end{enumerate}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{2. Related works}
+
+A few common problems related to stacks, mostly applied to cargo containers.
+
+Assume there is a set of cargo containers in a yard with a certain number of slots, and that containers are stacked to save space.
+
+\vspace{0.5em}
+
+\begin{tabular}{@{}p{46mm} p{70mm}@{}}
+  \textbf{Container Pre-Marshalling Problem (CPMP)} & \textbf{Block Relocation Problem (BRP)} \\
+  Some containers have more priority than others (e.g., are meant to be shipped first than others), so each stack must be sorted in non-decreasing order of priority from the bottom up with the least number of moves. &
+  Containers will be extracted in a specific order (say that the $N$ containers are numbered from $1$ to $N$; container 1 is extracted first, then 2, ..., and finally container $N$). The goal is to extract all containers in that order with the least amount of moves (i.e., if you need to remove container 3 to extract container 1, you'd prefer to put 3 on top of 4 than on top of 2, otherwise you'd have to again relocate 3 to reach 2).
+\end{tabular}
+
+\end{frame}
+
+% \begin{itemize}
+% \item In both problems, search methods such as A* (with carefully considered heuristics) and branch-and-bound are regularly applied and yield good results, although optimal methods are clearly only reasonable in small scenarios, or to evaluate quality of sub-optimal, faster heuristic search methods.
+
+% \item \cite{bortfeldt2012} provided a lower bound for the number of moves (very important to use as admissible heuristic for A*), and applied a tree search procedure to CPMP. \cite{tierney2017} further applied branching/symmetry breaking rules and iterative deepening A* to increase the size of problems that can be solved optimally.
+
+% \item \cite{tricoire2018} proposed heuristics/metaheuristics for large BRP instances, and compared those approaches to branch-and-bound algorithms.
+% \end{itemize}
+
+\begin{frame}
+
+\frametitle{2. Related works}
+\framesubtitle{2.1. Combinatorial search problems}
+
+There are many approaches to combinatorial search problems \cite{kotthoff2014}, but we are yet to fully explore this article and the methods it surveys.
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{2. Related works}
+\framesubtitle{2.1. Container Pre-Marshalling Problem (CPMP)}
+
+\begin{itemize}
+  \item Has been approached before with machine learning:
+  \begin{itemize}
+    \item \textbf{Reinforcement learning:} Q-learning \cite{hirashima2008}
+    \item \textbf{Supervised learning:} \cite{hottung2020} labels nodes using known near-optimal algorithms, and uses a tree search together with deep neural networks (DNN) to select branches and prune the search tree, claims to achieve results 2\% away from optimality.
+  \end{itemize}
+  % \item Many mention classical approaches focus on search methods and strict lower bounds developed by experts in optimization and in the specific problem \cite{hottung2020, jovanovic2015, tierney2015}, and as such some prefer to focus on the \textbf{heuristics} to use:
+  % \begin{itemize}
+  %   \item There are plenty of heuristics to use \cite{jovanovic2015}.
+  %   \item (Semi-automatic) \textbf{feature analysis} was also successfully applied \cite{tierney2015}
+  % \end{itemize}
+  % \item \textbf{Issues with greedy strategies} which are commonly applied can be overcome with ant-colony optimization \cite{jovanovic2015}, which shares similarities with \textbf{$\varepsilon$-greedy} methods.
+\end{itemize}
+
+\end{frame}
+
+\begin{frame}
+
+\frametitle{2. Related works}
+\framesubtitle{2.1. Block Relocation Problem (BRP)}
+\begin{itemize}
+  \item Reinforcement learning has also been applied to BRP; \cite{jiang2021} provides a framework for reinforcement learning on BRP, and applies an heuristic function and $\varepsilon$-greedy strategy.
+  % \item Many research has been applied to finding lower bounds, and \cite{zhang2020} presents innovative upper and lower bounds for search tree pruning
+  % \item Optimal branch\&bound algorithms with heavy prunning have been applied with decent results for reasonably small instances, which can be improved upon by using a beam search algorithm (basically a best-first search with less memory usage).
+\end{itemize}
+
+This research is significant for our problem; even though the problems are quite different in nature, they share some traits with our problem, and can contribute with ideas for our own solutions.
+
+\end{frame}
+
+\begin{frame}
+  \frametitle{3. Tools and algorithms}
+
+  \href{https://github.com/Unity-Technologies/ml-agents}{\textbf{ML agents}} | Reinforcement learning
+  \begin{itemize}
+    \item PPO (Proximal Policy Optimization), on-policy "simple" first-order methods \cite{openai-ppo, schulman2017}
+    \item SAC (Soft-Actor Critic), off-policy stochastic policy updating with results that are good and stable over different instances of the same problem \cite{openai-sac, haarnoja2018}
+    \item POCA (Parallel Online Continuous Arcing), parallel boosting algorithm \cite{reichler2004}
+  \end{itemize}
+\end{frame}
+
+
+\begin{frame}
+\frametitle{4. Implementation}
+
+\begin{itemize}
+  \item \textbf{Language} | C\#
+  \item \textbf{Environment} | Unity engine (v2020.2.2)
+\end{itemize}
+
+\textbf{Summary:} game and puzzle generation implemented, human interface implemented, trained PPO, SAC models
+
+\begin{center}
+  \includegraphics[width=75mm]{img/game-interface.png}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{5. Results}
+\framesubtitle{5.1. PPO}
+
+\textbf{GRÁFICOS DE VÁRIOS PPOs}
+
+\textbf{Results of best PPO configurations}
+
+Averaged over 10 random episodes
+
+\begin{center}
+  \begin{tabular}{l | r | r}
+                          & \textbf{Old reward} & \textbf{New reward} \\ \hline
+    Success rate (\%)     &                     & $100$ \\
+    Number of (hit) moves &                     & $22.3$ \\
+    Miss rate (\%)        &                     & $84.02$ \\
+  \end{tabular}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{5. Results}
+\framesubtitle{5.2. SAC}
+
+\textbf{GRÁFICOS DE VÁRIOS SACs}
+
+\textbf{Results of best SAC configurations}
+
+\begin{center}
+  \begin{tabular}{l | r | r}
+                          & \textbf{Old reward} & \textbf{New reward} \\ \hline
+    Success rate (\%)     &                     & \\
+    Number of (hit) moves &                     & \\
+    Miss rate (\%)        &                     & \\
+  \end{tabular}
+\end{center}
+
+\end{frame}
+
+\begin{frame}[allowframebreaks]
+  \scriptsize
+  \frametitle{Bibliography}
+  \setbeamertemplate{bibliography item}{\insertbiblabel}
+  \bibliographystyle{acm}
+  \bibliography{report}
+\end{frame}
+
+\end{document}
