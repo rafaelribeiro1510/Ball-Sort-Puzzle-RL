@@ -1,0 +1,35 @@
+{
+    "Game": {
+        "checkpoints": [
+            {
+                "steps": 499950,
+                "file_path": "results\\PPONew3\\Game\\Game-499950.onnx",
+                "reward": 0.8459214355264392,
+                "creation_time": 1621726748.589014
+            },
+            {
+                "steps": 999977,
+                "file_path": "results\\PPONew3\\Game\\Game-999977.onnx",
+                "reward": 0.989049996648516,
+                "creation_time": 1621727414.0818985
+            },
+            {
+                "steps": 1000041,
+                "file_path": "results\\PPONew3\\Game\\Game-1000041.onnx",
+                "reward": 0.989049996648516,
+                "creation_time": 1621727414.207035
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 1000041,
+            "file_path": "results\\PPONew3\\Game.onnx",
+            "reward": 0.989049996648516,
+            "creation_time": 1621727414.207035
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.2.0",
+        "mlagents_version": "0.25.1",
+        "torch_version": "1.7.1+cu110"
+    }
+}

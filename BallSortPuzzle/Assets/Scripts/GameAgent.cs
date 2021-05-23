@@ -13,8 +13,9 @@ public class GameAgent : Agent
 
     // Rewards
     private float nMoves = 0;
-    private const float MaxMoves = 500;
-    private const float MoveMissReward = 0f;
+    private float nMisses = 0;
+    private const float MaxMoves = 5000;
+    private const float MoveMissReward = -0.01f;
     private const float MoveReward = -0.001f;
     private const float MoveHitReward = 0.01f;
     private const float LossReward = -1f;
@@ -44,7 +45,7 @@ public class GameAgent : Agent
         }
 
         var discreteActions = actions.DiscreteActions;
-        //print(discreteActions[0] + " ; " + discreteActions[1]);
+        // print(discreteActions[0] + " ; " + discreteActions[1]);
         
         /*
         // For now, ignores values outside range of tubes ; Ideally, TODO change `Discrete Branch Size` to this value
@@ -75,14 +76,15 @@ public class GameAgent : Agent
         {
             if (!_board.CanMove(discreteActions[0], discreteActions[1]))
             {
-                // AddReward(MoveMissReward);
+                //AddReward(MoveMissReward);
+                nMisses++;
             }
             else
             {
                 // Reward moving balls on top of other balls, as opposed to empty tubes
                 // AddReward(_board.Tubes[discreteActions[1]].Count == 0 ? MoveHitReward : MoveGoodHitReward);
                 
-                // AddReward(MoveHitReward);
+                //AddReward(MoveHitReward);
 
                 // Visually move ball, and update board model
                 nMoves++;
@@ -94,7 +96,7 @@ public class GameAgent : Agent
 
     private float WinFactor()
     {
-        return 0.5f + (MaxMoves / nMoves) / (MaxMoves*2f);
+        return 1 - ((nMisses / MaxMoves) * 0.25f) - ((nMoves / MaxMoves) * 0.25f);
         //return 1f;
     }
 
@@ -107,6 +109,7 @@ public class GameAgent : Agent
     public override void OnEpisodeBegin()
     {
         nMoves = 0;
+        nMisses = 0;
         state = Board.State.Start;
         _board.InitializeBoard();
     }
