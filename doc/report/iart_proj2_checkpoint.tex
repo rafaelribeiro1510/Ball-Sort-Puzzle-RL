@@ -113,7 +113,25 @@ Starting with a set of differently coloured balls distributed at random in diffe
 
 \begin{frame}
 \frametitle{1. Work specification}
-\framesubtitle{1.2. Solution description}
+\framesubtitle{1.2. Problem formalization}
+
+\textbf{State} | Vector $S = \langle t_1, t_2, ..., t_N \rangle$ of $N$ tubes with maximum capacity $H$, where tube $i$ is a stack $t_i = \langle t_i(1), t_i(2), ..., t_i(h_i) \rangle$ with $h_i$ balls ($0 \leq h_i \leq H$), where $t_i(1)$ is the color of the ball at the bottom, and $t_i(h_i)$ the color at the top. There are $C$ colors ($C < N$) numbered sequentially, thus $\forall i, j,~1 \leq t_i(j) \leq C$.
+
+\textbf{Action} | The only action is a move:
+\begin{itemize}
+  \item Given state $S$, choose origin \& destination tubes $1 \leq i, j \leq N$ ($i \neq j$).
+  \item Pre-conditions: $h_i \geq 1$, $h_j < H$ and either $h_j = 0$ or $t_i(h_i)=t_j(h_j)$.
+  \item Cost: $1$ (one).
+  \item Post-conditions: $S'$ is built from $S$, except $t_i$ is a ball shorter (say it had color $c$), and $t_j$ has one more ball at the top with color $c$.
+\end{itemize}
+
+\textbf{Policy} \& \textbf{Reward} | This is what we want to find.
+
+\end{frame}
+
+\begin{frame}
+\frametitle{1. Work specification}
+\framesubtitle{1.3. Solution description}
 
 \begin{enumerate}
   \itemsep0em
@@ -184,7 +202,7 @@ There are many approaches to combinatorial search problems \cite{kotthoff2014}, 
 \frametitle{2. Related works}
 \framesubtitle{2.1. Block Relocation Problem (BRP)}
 \begin{itemize}
-  \item Reinforcement learning has also been applied to BRP; \cite{jiang2021} provides a framework for reinforcement learning on BRP, and applies an heuristic function and $\epsilon$-greedy strategy.
+  \item Reinforcement learning has also been applied to BRP; \cite{jiang2021} provides a framework for reinforcement learning on BRP, and applies an heuristic function and $\varepsilon$-greedy strategy.
   \item Many research has been applied to finding lower bounds, and \cite{zhang2020} presents innovative upper and lower bounds for search tree pruning
   \item Optimal branch\&bound algorithms with heavy prunning have been applied with decent results for reasonably small instances, which can be improved upon by using a beam search algorithm (basically a best-first search with less memory usage).
 \end{itemize}
@@ -213,7 +231,7 @@ This research is significant for our problem; even though the problems are quite
   \item \textbf{Environment} | Unity engine (v2020.2.2)
 \end{itemize}
 
-\textbf{Summary:} game and puzzle generation implemented, human interface implemented, beginning to implement machine learning algorithms
+\textbf{Summary:} game and puzzle generation implemented, human interface implemented, beginning to train machine learning models
 
 \begin{center}
   \includegraphics[width=75mm]{img/game-interface.png}
