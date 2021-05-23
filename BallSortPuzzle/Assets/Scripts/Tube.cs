@@ -20,8 +20,8 @@ public class Tube : MonoBehaviour
     public void Resize()
     {
         transform.GetChild(0).localScale = new Vector3(1, height + 0.2f, 1);
-        var oldPos = transform.GetChild(1).position;
-        transform.GetChild(1).position = new Vector3(oldPos.x, -height - 0.2f, oldPos.z);
+        var oldPos = transform.GetChild(1).localPosition;
+        transform.GetChild(1).localPosition = new Vector3(oldPos.x, -height - 0.2f, oldPos.z);
         
         var size = _collider.size;
         size = new Vector3(size.x, height*2, size.z);
@@ -45,10 +45,10 @@ public class Tube : MonoBehaviour
         var topBall = RemoveTopBall();
 
         if(topBall is null) {
-           return new Vector3(transform.position.x, -Height - 0.6f, transform.position.z);
+           return new Vector3(transform.localPosition.x, -Height - 0.6f, transform.localPosition.z);
         }
 
-        var tubePosition = topBall.transform.position;
+        var tubePosition = topBall.transform.localPosition;
         AddBallToTube(topBall);
 
         return tubePosition;
