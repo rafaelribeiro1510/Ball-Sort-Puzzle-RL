@@ -1,0 +1,38 @@
+{
+    "Game": {
+        "checkpoints": [
+            {
+                "steps": 499965,
+                "file_path": "results\\POCANEW\\Game\\Game-499965.onnx",
+                "reward": 0.972862496972084,
+                "creation_time": 1621848051.870258,
+                "auxillary_file_paths": [
+                    "results\\POCANEW\\Game\\Game-499965.pt"
+                ]
+            },
+            {
+                "steps": 500066,
+                "file_path": "results\\POCANEW\\Game\\Game-500066.onnx",
+                "reward": 0.9749666651089987,
+                "creation_time": 1621848051.928597,
+                "auxillary_file_paths": [
+                    "results\\POCANEW\\Game\\Game-500066.pt"
+                ]
+            }
+        ],
+        "final_checkpoint": {
+            "steps": 500066,
+            "file_path": "results\\POCANEW\\Game.onnx",
+            "reward": 0.9749666651089987,
+            "creation_time": 1621848051.928597,
+            "auxillary_file_paths": [
+                "results\\POCANEW\\Game\\Game-500066.pt"
+            ]
+        }
+    },
+    "metadata": {
+        "stats_format_version": "0.3.0",
+        "mlagents_version": "0.26.0",
+        "torch_version": "1.7.0+cu110"
+    }
+}
