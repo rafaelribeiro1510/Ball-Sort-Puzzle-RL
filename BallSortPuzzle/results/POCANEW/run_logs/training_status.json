@@ -2,31 +2,58 @@
     "Game": {
         "checkpoints": [
             {
-                "steps": 499965,
-                "file_path": "results\\POCANEW\\Game\\Game-499965.onnx",
-                "reward": 0.972862496972084,
-                "creation_time": 1621848051.870258,
+                "steps": 3499983,
+                "file_path": "results\\POCANEW\\Game\\Game-3499983.onnx",
+                "reward": 0.992011116610633,
+                "creation_time": 1621947890.583172,
                 "auxillary_file_paths": [
-                    "results\\POCANEW\\Game\\Game-499965.pt"
+                    "results\\POCANEW\\Game\\Game-3499983.pt"
                 ]
             },
             {
-                "steps": 500066,
-                "file_path": "results\\POCANEW\\Game\\Game-500066.onnx",
-                "reward": 0.9749666651089987,
-                "creation_time": 1621848051.928597,
+                "steps": 3999986,
+                "file_path": "results\\POCANEW\\Game\\Game-3999986.onnx",
+                "reward": 0.9900116268978563,
+                "creation_time": 1621948172.0006604,
                 "auxillary_file_paths": [
-                    "results\\POCANEW\\Game\\Game-500066.pt"
+                    "results\\POCANEW\\Game\\Game-3999986.pt"
+                ]
+            },
+            {
+                "steps": 4499953,
+                "file_path": "results\\POCANEW\\Game\\Game-4499953.onnx",
+                "reward": 0.8788444432947371,
+                "creation_time": 1621948462.347087,
+                "auxillary_file_paths": [
+                    "results\\POCANEW\\Game\\Game-4499953.pt"
+                ]
+            },
+            {
+                "steps": 4999964,
+                "file_path": "results\\POCANEW\\Game\\Game-4999964.onnx",
+                "reward": 0.9922000169754028,
+                "creation_time": 1621948752.803596,
+                "auxillary_file_paths": [
+                    "results\\POCANEW\\Game\\Game-4999964.pt"
+                ]
+            },
+            {
+                "steps": 5000028,
+                "file_path": "results\\POCANEW\\Game\\Game-5000028.onnx",
+                "reward": 0.9922000169754028,
+                "creation_time": 1621948752.876567,
+                "auxillary_file_paths": [
+                    "results\\POCANEW\\Game\\Game-5000028.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 500066,
+            "steps": 5000028,
             "file_path": "results\\POCANEW\\Game.onnx",
-            "reward": 0.9749666651089987,
-            "creation_time": 1621848051.928597,
+            "reward": 0.9922000169754028,
+            "creation_time": 1621948752.876567,
             "auxillary_file_paths": [
-                "results\\POCANEW\\Game\\Game-500066.pt"
+                "results\\POCANEW\\Game\\Game-5000028.pt"
             ]
         }
     },
