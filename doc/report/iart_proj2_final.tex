@@ -26,6 +26,7 @@
 \DeclareCaptionFont{black}{\color{black}}
 \DeclareCaptionFormat{listing}{{\tiny \textbf{#1}#2#3}}
 \captionsetup[lstlisting]{format=listing,labelfont=black,textfont=black}
+\usepackage{subfigure}
 
 \usepackage{listings}
 \lstset{
@@ -279,18 +280,26 @@ This research is significant for our problem; even though the problems are quite
 \frametitle{5. Results}
 \framesubtitle{5.1. PPO}
 
-\textbf{GRÁFICOS DE VÁRIOS PPOs}
-
-\textbf{Results of best PPO configurations}
-
-Averaged over 10 random episodes
+Pink | PPO, old reward ~~~~~ Grey | PPO, new reward
 
 \begin{center}
+  \begin{tabular}{c c c}
+    \includegraphics[height=25mm]{img/ppo/ppo-cumulative-reward.PNG} &
+    \includegraphics[height=25mm]{img/ppo/ppo-episode-length.PNG} &
+    \includegraphics[height=25mm]{img/ppo/ppo-policy-loss.PNG} \\
+    \includegraphics[height=25mm]{img/ppo/ppo-value-loss.PNG} &
+    \includegraphics[height=25mm]{img/ppo/ppo-entropy.PNG} &
+    \includegraphics[height=25mm]{img/ppo/ppo-extrinsic-value-estimate.PNG} \\
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  \footnotesize
   \begin{tabular}{l | r | r}
                           & \textbf{Old reward} & \textbf{New reward} \\ \hline
-    Success rate (\%)     &                     & $100$ \\
-    Number of (hit) moves &                     & $22.3$ \\
-    Miss rate (\%)        &                     & $84.02$ \\
+    Success rate (\%)     & $95$                & $95$                \\
+    Number of (hit) moves & $24.6$              & $24.98$             \\
+    Miss rate (\%)        & $81.9$              & $84.1$              \\
   \end{tabular}
 \end{center}
 
@@ -300,19 +309,55 @@ Averaged over 10 random episodes
 \frametitle{5. Results}
 \framesubtitle{5.2. SAC}
 
-\textbf{GRÁFICOS DE VÁRIOS SACs}
-
-\textbf{Results of best SAC configurations}
-
 \begin{center}
-  \begin{tabular}{l | r | r}
-                          & \textbf{Old reward} & \textbf{New reward} \\ \hline
-    Success rate (\%)     &                     & \\
-    Number of (hit) moves &                     & \\
-    Miss rate (\%)        &                     & \\
+  \begin{tabular}{c c c}
+    \includegraphics[height=25mm]{img/ppo/ppo-cumulative-reward.PNG} &
+    \includegraphics[height=25mm]{img/ppo/ppo-episode-length.PNG} &
+    \includegraphics[height=25mm]{img/ppo/ppo-policy-loss.PNG} \\
+    \includegraphics[height=25mm]{img/ppo/ppo-value-loss.PNG} &
+    \includegraphics[height=25mm]{img/ppo/ppo-entropy.PNG} &
+    \includegraphics[height=25mm]{img/ppo/ppo-extrinsic-value-estimate.PNG} \\
   \end{tabular}
 \end{center}
 
+\begin{center}
+  \footnotesize
+  \begin{tabular}{l | r}
+                          & \textbf{Old reward} \\ \hline
+    Success rate (\%)     & $87.5$              \\
+    Number of (hit) moves & $58.85$             \\
+    Miss rate (\%)        & $96.7$              \\
+  \end{tabular}
+\end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{5. Results}
+\framesubtitle{5.3. POCA}
+
+Orange | POCA, old reward ~~~~~ Blue | POCA, new reward
+
+\begin{center}
+  \begin{tabular}{c c c}
+    \includegraphics[height=25mm]{img/poca/poca-cumulative-reward.PNG} &
+    \includegraphics[height=25mm]{img/poca/poca-episode-length.PNG} &
+    \includegraphics[height=25mm]{img/poca/poca-baseline-loss.PNG} \\
+    \includegraphics[height=25mm]{img/poca/poca-entropy.PNG} &
+    \includegraphics[height=25mm]{img/poca/poca-extrinsic-baseline-estimate.PNG} &
+    \includegraphics[height=25mm]{img/poca/poca-extrinsic-value-estimate.PNG} \\
+  \end{tabular}
+\end{center}
+
+\begin{center}
+  \footnotesize
+  \begin{tabular}{l | r | r}
+    \textbf{Best POCA configurations} & \textbf{Old reward} & \textbf{New reward} \\ \hline
+    Success rate (\%)     &                     &                     \\
+    Number of (hit) moves &                     &                     \\
+    Miss rate (\%)        &                     &                     \\
+  \end{tabular}
+\end{center}
 \end{frame}
 
 \begin{frame}[allowframebreaks]
