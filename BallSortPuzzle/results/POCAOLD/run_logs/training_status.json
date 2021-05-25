@@ -2,31 +2,58 @@
     "Game": {
         "checkpoints": [
             {
-                "steps": 499987,
-                "file_path": "results\\POCAOLD\\Game\\Game-499987.onnx",
-                "reward": -1.8684667289257049,
-                "creation_time": 1621864715.69759,
+                "steps": 3499980,
+                "file_path": "results\\POCAOLD\\Game\\Game-3499980.onnx",
+                "reward": -0.5260625388473272,
+                "creation_time": 1621944707.5078447,
                 "auxillary_file_paths": [
-                    "results\\POCAOLD\\Game\\Game-499987.pt"
+                    "results\\POCAOLD\\Game\\Game-3499980.pt"
                 ]
             },
             {
-                "steps": 500051,
-                "file_path": "results\\POCAOLD\\Game\\Game-500051.onnx",
-                "reward": -1.8684667289257049,
-                "creation_time": 1621864715.7555919,
+                "steps": 3999988,
+                "file_path": "results\\POCAOLD\\Game\\Game-3999988.onnx",
+                "reward": -0.6629778054025438,
+                "creation_time": 1621944995.4292953,
                 "auxillary_file_paths": [
-                    "results\\POCAOLD\\Game\\Game-500051.pt"
+                    "results\\POCAOLD\\Game\\Game-3999988.pt"
+                ]
+            },
+            {
+                "steps": 4499970,
+                "file_path": "results\\POCAOLD\\Game\\Game-4499970.onnx",
+                "reward": -1.0246154024050786,
+                "creation_time": 1621945278.170169,
+                "auxillary_file_paths": [
+                    "results\\POCAOLD\\Game\\Game-4499970.pt"
+                ]
+            },
+            {
+                "steps": 4999985,
+                "file_path": "results\\POCAOLD\\Game\\Game-4999985.onnx",
+                "reward": -2.2017778356870017,
+                "creation_time": 1621945560.6579103,
+                "auxillary_file_paths": [
+                    "results\\POCAOLD\\Game\\Game-4999985.pt"
+                ]
+            },
+            {
+                "steps": 5000049,
+                "file_path": "results\\POCAOLD\\Game\\Game-5000049.onnx",
+                "reward": -2.2017778356870017,
+                "creation_time": 1621945560.722704,
+                "auxillary_file_paths": [
+                    "results\\POCAOLD\\Game\\Game-5000049.pt"
                 ]
             }
         ],
         "final_checkpoint": {
-            "steps": 500051,
+            "steps": 5000049,
             "file_path": "results\\POCAOLD\\Game.onnx",
-            "reward": -1.8684667289257049,
-            "creation_time": 1621864715.7555919,
+            "reward": -2.2017778356870017,
+            "creation_time": 1621945560.722704,
             "auxillary_file_paths": [
-                "results\\POCAOLD\\Game\\Game-500051.pt"
+                "results\\POCAOLD\\Game\\Game-5000049.pt"
             ]
         }
     },
