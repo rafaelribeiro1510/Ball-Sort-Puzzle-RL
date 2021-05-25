@@ -126,7 +126,7 @@ Starting with a set of differently coloured balls distributed at random in diffe
   \item Post-conditions: $S'$ is built from $S$, except $t_i$ is a ball shorter (say it had color $c$), and $t_j$ has one more ball at the top with color $c$.
 \end{itemize}
 
-\textbf{Policy} | This is what we want to find.
+% \textbf{Policy} | This is what we want to find.
 
 \end{frame}
 
@@ -152,7 +152,7 @@ Sample values:
   \end{tabular}
 \end{center}
 
-Then we tried a new reward function:
+Then we tried a new reward function \cite{metz2020}:
 
 \begin{equation*}
   r = \begin{cases}
@@ -311,14 +311,11 @@ Pink | PPO, old reward ~~~~~ Grey | PPO, new reward
 
 \begin{center}
   \begin{tabular}{c c c}
-    \includegraphics[height=25mm]{img/ppo/ppo-cumulative-reward.PNG} &
-    \includegraphics[height=25mm]{img/ppo/ppo-episode-length.PNG} &
-    \includegraphics[height=25mm]{img/ppo/ppo-policy-loss.PNG} \\
-    \includegraphics[height=25mm]{img/ppo/ppo-value-loss.PNG} &
-    \includegraphics[height=25mm]{img/ppo/ppo-entropy.PNG} &
-    \includegraphics[height=25mm]{img/ppo/ppo-extrinsic-value-estimate.PNG} \\
+    TODO
   \end{tabular}
 \end{center}
+
+TODO
 
 \begin{center}
   \footnotesize
