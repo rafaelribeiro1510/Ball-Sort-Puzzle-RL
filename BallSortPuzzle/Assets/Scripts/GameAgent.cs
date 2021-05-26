@@ -56,18 +56,20 @@ public class GameAgent : Agent
         */
         
         // Try making as few moves as possible
-        // AddReward(MoveReward);
+         AddReward(MoveReward);
 
         if (_board.IsGameOver())
         {
-            SetReward(WinFactor());
+            //SetReward(WinFactor());
+            AddReward(WinReward);
             //print("Won!");
             _board.SetSuccessMat();
             EndEpisode();
         }
         else if (_board.GetAllMoves().Count == 0)
         {
-            SetReward(LoseFactor());
+            //SetReward(LoseFactor());
+            SetReward(LossReward);
             //print("Locked!");
             _board.SetFailureMat();
             EndEpisode();
@@ -76,7 +78,7 @@ public class GameAgent : Agent
         {
             if (!_board.CanMove(discreteActions[0], discreteActions[1]))
             {
-                //AddReward(MoveMissReward);
+                AddReward(MoveMissReward);
                 nMisses++;
             }
             else
@@ -84,7 +86,7 @@ public class GameAgent : Agent
                 // Reward moving balls on top of other balls, as opposed to empty tubes
                 // AddReward(_board.Tubes[discreteActions[1]].Count == 0 ? MoveHitReward : MoveGoodHitReward);
                 
-                //AddReward(MoveHitReward);
+                AddReward(MoveHitReward);
 
                 // Visually move ball, and update board model
                 nMoves++;
