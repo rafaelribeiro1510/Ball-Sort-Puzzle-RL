@@ -1,9 +1,9 @@
-using System.Collections.Generic;
+using System;
+using System.IO;
 using System.Linq;
 using UnityEngine;
 using Unity.MLAgents;
 using Unity.MLAgents.Actuators;
-using Unity.MLAgents.Policies;
 using Unity.MLAgents.Sensors;
 
 public class GameAgent : Agent
@@ -12,9 +12,11 @@ public class GameAgent : Agent
     private Board _board;
 
     // Rewards
+    private int nITers = 0;
     private float nMoves = 0;
     private float nMisses = 0;
     private const float MaxMoves = 5000;
+    
     private const float MoveMissReward = -0.01f;
     private const float MoveReward = -0.001f;
     private const float MoveHitReward = 0.01f;
@@ -37,6 +39,8 @@ public class GameAgent : Agent
 
     public override void OnActionReceived(ActionBuffers actions)
     {
+        if (nITers > 40) print("STOPOSPTOPOSTPOSTPOOSTPOTPO");
+        
         if (heuristicMode)
         {
             if (state != Board.State.MoveMade)
@@ -45,10 +49,9 @@ public class GameAgent : Agent
         }
 
         var discreteActions = actions.DiscreteActions;
-        // print(discreteActions[0] + " ; " + discreteActions[1]);
         
         /*
-        // For now, ignores values outside range of tubes ; Ideally, TODO change `Discrete Branch Size` to this value
+        // For simplified puzzle, ignores values outside range of tubes ; Ideally, TODO change `Discrete Branch Size` to this value
         if (discreteActions[0] >= _board.Tubes.Count || discreteActions[1] >= _board.Tubes.Count) 
         {
             return;
@@ -60,17 +63,18 @@ public class GameAgent : Agent
 
         if (_board.IsGameOver())
         {
-            //SetReward(WinFactor());
-            AddReward(WinReward);
-            //print("Won!");
+            SetReward(WinFactor());
+            // AddReward(WinReward);
+            writeToFile(nMoves + " ; " + nMisses); nITers++;
             _board.SetSuccessMat();
             EndEpisode();
         }
         else if (_board.GetAllMoves().Count == 0)
         {
-            //SetReward(LoseFactor());
-            SetReward(LossReward);
-            //print("Locked!");
+            SetReward(LoseFactor());
+            // AddReward(LossReward);
+            //print("Locked! " + nMoves + " ; " + nMisses);
+            writeToFile(nMoves + " ; " + nMisses); nITers++;
             _board.SetFailureMat();
             EndEpisode();
         }
@@ -78,28 +82,28 @@ public class GameAgent : Agent
         {
             if (!_board.CanMove(discreteActions[0], discreteActions[1]))
             {
-                AddReward(MoveMissReward);
+                // AddReward(MoveMissReward);
+                
                 nMisses++;
             }
             else
             {
-                // Reward moving balls on top of other balls, as opposed to empty tubes
+                // Reward moving balls on top of other balls, as opposed to empty tubes <- Proved not effective
                 // AddReward(_board.Tubes[discreteActions[1]].Count == 0 ? MoveHitReward : MoveGoodHitReward);
                 
-                AddReward(MoveHitReward);
+                // AddReward(MoveHitReward);
 
                 // Visually move ball, and update board model
                 nMoves++;
                 RemoveTopBallFromTube(discreteActions[0]);
                 PutBallInTheDestinyTube(discreteActions[1]);
-            }    
+            }
         }
     }
 
     private float WinFactor()
     {
         return 1 - ((nMisses / MaxMoves) * 0.25f) - ((nMoves / MaxMoves) * 0.25f);
-        //return 1f;
     }
 
     private float LoseFactor()
@@ -116,6 +120,12 @@ public class GameAgent : Agent
         _board.InitializeBoard();
     }
 
+    private void writeToFile(String str)
+    {
+        File.AppendAllText("results.txt", str + Environment.NewLine);
+    }
+    
+    
     // Human Interface functions (Heuristic)
 
     private bool heuristicMode;

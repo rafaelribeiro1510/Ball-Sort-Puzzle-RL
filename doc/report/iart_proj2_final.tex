@@ -79,7 +79,7 @@
 \end{tabular}
 }
 \institute[FEUP/IART]{Faculdade de Engenharia da Universidade do Porto \\ Artificial Intelligence (IART) -- Group 48}
-\date[16/05/2021]{24th of May, 2021}
+\date[25/05/2021]{24th of May, 2021}
 }
 
 \begin{document}
@@ -126,7 +126,7 @@ Starting with a set of differently coloured balls distributed at random in diffe
   \item Post-conditions: $S'$ is built from $S$, except $t_i$ is a ball shorter (say it had color $c$), and $t_j$ has one more ball at the top with color $c$.
 \end{itemize}
 
-\textbf{Policy} | This is what we want to find.
+% \textbf{Policy} | This is what we want to find.
 
 \end{frame}
 
@@ -152,7 +152,7 @@ Sample values:
   \end{tabular}
 \end{center}
 
-Then we tried a new reward function:
+Then we tried a new reward function \cite{metz2020}:
 
 \begin{equation*}
   r = \begin{cases}
@@ -298,7 +298,7 @@ Pink | PPO, old reward ~~~~~ Grey | PPO, new reward
   \begin{tabular}{l | r | r}
                           & \textbf{Old reward} & \textbf{New reward} \\ \hline
     Success rate (\%)     & $95$                & $95$                \\
-    Number of (hit) moves & $24.6$              & $24.98$             \\
+    Number of (hit) moves & $24.6$              & $25.0$              \\
     Miss rate (\%)        & $81.9$              & $84.1$              \\
   \end{tabular}
 \end{center}
@@ -309,24 +309,26 @@ Pink | PPO, old reward ~~~~~ Grey | PPO, new reward
 \frametitle{5. Results}
 \framesubtitle{5.2. SAC}
 
+Orange | SAC, old reward ~~~~~ Blue | SAC, new reward
+
 \begin{center}
   \begin{tabular}{c c c}
-    \includegraphics[height=25mm]{img/ppo/ppo-cumulative-reward.PNG} &
-    \includegraphics[height=25mm]{img/ppo/ppo-episode-length.PNG} &
-    \includegraphics[height=25mm]{img/ppo/ppo-policy-loss.PNG} \\
-    \includegraphics[height=25mm]{img/ppo/ppo-value-loss.PNG} &
-    \includegraphics[height=25mm]{img/ppo/ppo-entropy.PNG} &
-    \includegraphics[height=25mm]{img/ppo/ppo-extrinsic-value-estimate.PNG} \\
+    \includegraphics[height=25mm]{img/sac/sac-cumulative-reward.PNG} &
+    \includegraphics[height=25mm]{img/sac/sac-episode-length.PNG} &
+    \includegraphics[height=25mm]{img/sac/sac-q1-loss.PNG} \\
+    \includegraphics[height=25mm]{img/sac/sac-entropy.PNG} &
+    \includegraphics[height=25mm]{img/sac/sac-policy-loss.PNG} &
+    \includegraphics[height=25mm]{img/sac/sac-value-loss.PNG} \\
   \end{tabular}
 \end{center}
 
 \begin{center}
   \footnotesize
-  \begin{tabular}{l | r}
-                          & \textbf{Old reward} \\ \hline
-    Success rate (\%)     & $87.5$              \\
-    Number of (hit) moves & $58.85$             \\
-    Miss rate (\%)        & $96.7$              \\
+  \begin{tabular}{l | r | r}
+                          & \textbf{Old reward} & \textbf{New reward} \\ \hline
+    Success rate (\%)     & $87.5$              & TODO                \\
+    Number of (hit) moves & $58.85$             & TODO                \\
+    Miss rate (\%)        & $96.7$              & TODO                \\
   \end{tabular}
 \end{center}
 
@@ -353,9 +355,9 @@ Orange | POCA, old reward ~~~~~ Blue | POCA, new reward
   \footnotesize
   \begin{tabular}{l | r | r}
     \textbf{Best POCA configurations} & \textbf{Old reward} & \textbf{New reward} \\ \hline
-    Success rate (\%)     &                     &                     \\
-    Number of (hit) moves &                     &                     \\
-    Miss rate (\%)        &                     &                     \\
+    Success rate (\%)                 & $95$                & $97.5$              \\
+    Number of (hit) moves             & $20.2$              & $24.9$              \\
+    Miss rate (\%)                    & $82.98$             & $85.99$             \\
   \end{tabular}
 \end{center}
 \end{frame}
