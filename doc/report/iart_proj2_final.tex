@@ -118,11 +118,10 @@ Starting with a set of differently coloured balls distributed at random in diffe
 
 \textbf{State} | Vector $S = \langle t_1, t_2, ..., t_N \rangle$ of $N$ tubes with maximum capacity $H$, where tube $i$ is a stack $t_i = \langle t_i(1), t_i(2), ..., t_i(h_i) \rangle$ with $h_i$ balls ($0 \leq h_i \leq H$), where $t_i(1)$ is the color of the ball at the bottom, and $t_i(h_i)$ the color at the top. There are $C$ colors ($C < N$) numbered sequentially, thus $\forall i, j,~1 \leq t_i(j) \leq C$.
 
-\textbf{Action} | The only action is a move:
+\textbf{Action} | The only action is a move $(i,j)$:
 \begin{itemize}
-  \item Given state $S$, choose origin \& destination tubes $1 \leq i, j \leq N$ ($i \neq j$).
+  \item Origin \& destination tubes $1 \leq i, j \leq N$ ($i \neq j$).
   \item Pre-conditions: $h_i \geq 1$, $h_j < H$ and either $h_j = 0$ or $t_i(h_i)=t_j(h_j)$.
-  \item Cost: $1$ (one).
   \item Post-conditions: $S'$ is built from $S$, except $t_i$ is a ball shorter (say it had color $c$), and $t_j$ has one more ball at the top with color $c$.
 \end{itemize}
 
@@ -174,7 +173,7 @@ Then we tried a new reward function \cite{metz2020}:
   \itemsep0em
   \item Implement the game
   \item Implement a human-friendly interface.
-  \item Use machine learning algorithms to solve the game, and compare performances.
+  \item Use reinforcement learning algorithms (more specifically deep learning) to solve the game and compare performances.
 \end{enumerate}
 
 \end{frame}
@@ -196,27 +195,10 @@ Assume there is a set of cargo containers in a yard with a certain number of slo
 
 \end{frame}
 
-% \begin{itemize}
-% \item In both problems, search methods such as A* (with carefully considered heuristics) and branch-and-bound are regularly applied and yield good results, although optimal methods are clearly only reasonable in small scenarios, or to evaluate quality of sub-optimal, faster heuristic search methods.
-
-% \item \cite{bortfeldt2012} provided a lower bound for the number of moves (very important to use as admissible heuristic for A*), and applied a tree search procedure to CPMP. \cite{tierney2017} further applied branching/symmetry breaking rules and iterative deepening A* to increase the size of problems that can be solved optimally.
-
-% \item \cite{tricoire2018} proposed heuristics/metaheuristics for large BRP instances, and compared those approaches to branch-and-bound algorithms.
-% \end{itemize}
-
 \begin{frame}
 
 \frametitle{2. Related works}
-\framesubtitle{2.1. Combinatorial search problems}
-
-There are many approaches to combinatorial search problems \cite{kotthoff2014}, but we are yet to fully explore this article and the methods it surveys.
-
-\end{frame}
-
-\begin{frame}
-
-\frametitle{2. Related works}
-\framesubtitle{2.1. Container Pre-Marshalling Problem (CPMP)}
+\textbf{Container Pre-Marshalling Problem (CPMP)}
 
 \begin{itemize}
   \item Has been approached before with machine learning:
@@ -224,20 +206,11 @@ There are many approaches to combinatorial search problems \cite{kotthoff2014}, 
     \item \textbf{Reinforcement learning:} Q-learning \cite{hirashima2008}
     \item \textbf{Supervised learning:} \cite{hottung2020} labels nodes using known near-optimal algorithms, and uses a tree search together with deep neural networks (DNN) to select branches and prune the search tree, claims to achieve results 2\% away from optimality.
   \end{itemize}
-  % \item Many mention classical approaches focus on search methods and strict lower bounds developed by experts in optimization and in the specific problem \cite{hottung2020, jovanovic2015, tierney2015}, and as such some prefer to focus on the \textbf{heuristics} to use:
-  % \begin{itemize}
-  %   \item There are plenty of heuristics to use \cite{jovanovic2015}.
-  %   \item (Semi-automatic) \textbf{feature analysis} was also successfully applied \cite{tierney2015}
-  % \end{itemize}
-  % \item \textbf{Issues with greedy strategies} which are commonly applied can be overcome with ant-colony optimization \cite{jovanovic2015}, which shares similarities with \textbf{$\varepsilon$-greedy} methods.
+
 \end{itemize}
 
-\end{frame}
+\textbf{Block Relocation Problem (BRP)}
 
-\begin{frame}
-
-\frametitle{2. Related works}
-\framesubtitle{2.1. Block Relocation Problem (BRP)}
 \begin{itemize}
   \item Reinforcement learning has also been applied to BRP; \cite{jiang2021} provides a framework for reinforcement learning on BRP, and applies an heuristic function and $\varepsilon$-greedy strategy.
   % \item Many research has been applied to finding lower bounds, and \cite{zhang2020} presents innovative upper and lower bounds for search tree pruning
@@ -273,6 +246,35 @@ This research is significant for our problem; even though the problems are quite
 \begin{center}
   \includegraphics[width=75mm]{img/game-interface.png}
 \end{center}
+
+\end{frame}
+
+\begin{frame}
+\frametitle{5. Results}
+
+\begin{minipage}[c]{0.45\textwidth}
+\begin{center}
+  \includegraphics[height=35mm]{img/extrinsic-reward.PNG} \\
+  \includegraphics[height=35mm]{img/extrinsic-value-estimate.PNG}
+\end{center}
+\end{minipage}% 
+\begin{minipage}[c]{0.55\textwidth}
+\begin{center}
+  \small
+  \begin{tabular}{l | r r}
+    \textbf{Params} & \textbf{Default} & \textbf{Best config} \\ \hline
+    batch\_size     & $32$             & $64$                 \\
+    buffer\_size    & $10240$          & $2048$               \\
+    learning\_rate  & $3\times 10^{-4}$& $3\times 10^{-3}$    \\
+    beta            & $5\times 10^{-3}$& $5\times 10^{-2}$    \\
+    epsilon         & $0.2$            & $0.5$                \\
+    lambd           & $0.95$           & $0.90$               \\
+    num\_epoch      & $3$              & $4$                  \\
+    gamma           & $0.99$           & $0.995$
+  \end{tabular}
+\end{center}
+\end{minipage}
+ 
 
 \end{frame}
 
@@ -326,9 +328,9 @@ Orange | SAC, old reward ~~~~~ Blue | SAC, new reward
   \footnotesize
   \begin{tabular}{l | r | r}
                           & \textbf{Old reward} & \textbf{New reward} \\ \hline
-    Success rate (\%)     & $87.5$              & TODO                \\
-    Number of (hit) moves & $58.85$             & TODO                \\
-    Miss rate (\%)        & $96.7$              & TODO                \\
+    Success rate (\%)     & $87.5$              & -                   \\
+    Number of (hit) moves & $58.85$             & -                   \\
+    Miss rate (\%)        & $96.7$              & -                   \\
   \end{tabular}
 \end{center}
 
@@ -360,6 +362,22 @@ Orange | POCA, old reward ~~~~~ Blue | POCA, new reward
     Miss rate (\%)                    & $82.98$             & $85.99$             \\
   \end{tabular}
 \end{center}
+\end{frame}
+
+\begin{frame}
+\frametitle{6. Conclusion}
+
+\begin{itemize}
+  \item This puzzle is quite hard for RL.
+
+  \item It was good to simplify the problem to $N=5$, $H=4$, $C=3$, otherwise it would have been even harder. Tested with random puzzles but with same parameters.
+  
+  \item The two rewards learned in different ways across several algorithms (explicit reward value growth in old formula, good episode time decrease in both), but have similar performance.
+  
+  \item PPO and POCA learned quite reasonably, SAC yielded poor and inconsistent results and takes a lot of time to train and test. POCA proved slightly better than PPO.
+  
+\end{itemize}
+
 \end{frame}
 
 \begin{frame}[allowframebreaks]
