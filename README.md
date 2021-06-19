@@ -35,3 +35,10 @@ Based on game [*Ball Sort Puzzle*](https://play.google.com/store/apps/details?id
 5. Click play to see the model play some random, simple ball sort puzzles. After every game, a new one of the same proportions and difficulty is generated
 
 (To manually play the game, select `Heuristic Only` in the `Behaviour Type`, play with the mouse, selecting the tubes to move the ball from and to with `LMB`. Note that due to the way ml-agents polls for input, some mouse inputs are lost)
+
+# License
+
+© 2021 Rafael Ribeiro, Diogo Rodrigues, Bernardo Ferreira
+
+All files are licensed under [GNU General Public License v3](https://github.com/dmfrodrigues/feup-iart-proj1/blob/master/LICENSE) by **© 2021 Rafael Ribeiro, Diogo Rodrigues, Bernardo Ferreira**, to the exception of:
+- all files inside directory `doc/report` and all artifacts deriving from them, which are licensed under the [Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International](doc/report/LICENSE) public license.
